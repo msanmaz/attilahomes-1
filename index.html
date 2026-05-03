@@ -1549,9 +1549,23 @@ body::before {
   <div class="filters-bar">
     <div class="filters-row">
       <div class="filter-type-btns">
+        <button class="filter-type-btn active" data-city="all" onclick="setCityFilter('all')">All</button>
+        <button class="filter-type-btn" data-city="Istanbul" onclick="setCityFilter('Istanbul')">Istanbul</button>
+        <button class="filter-type-btn" data-city="Bodrum" onclick="setCityFilter('Bodrum')">Bodrum</button>
+      </div>
+
+      <div class="filter-type-btns">
         <button class="filter-type-btn active" data-type="all" onclick="setTypeFilter('all')">All</button>
         <button class="filter-type-btn" data-type="sale" onclick="setTypeFilter('sale')">For Sale</button>
         <button class="filter-type-btn" data-type="rent" onclick="setTypeFilter('rent')">For Rent</button>
+      </div>
+
+      <div class="filter-group">
+        <button class="filter-btn" onclick="toggleDropdown('dd-neighborhoods')">
+          Neighborhoods
+          <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="filter-dropdown" id="dd-neighborhoods"></div>
       </div>
 
       <div class="filter-group">
@@ -1581,23 +1595,6 @@ body::before {
               <input type="number" class="price-input" id="price-max" placeholder="Max" oninput="applyFilters()">
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="filter-group">
-        <button class="filter-btn" onclick="toggleDropdown('dd-location')">
-          Location
-          <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-        </button>
-        <div class="filter-dropdown" id="dd-location">
-          <div class="filter-option" data-value="Manhattan" onclick="toggleLocationFilter(this)"><span class="check"></span> Manhattan, NY</div>
-          <div class="filter-option" data-value="Brooklyn" onclick="toggleLocationFilter(this)"><span class="check"></span> Brooklyn, NY</div>
-          <div class="filter-option" data-value="Beverly Hills" onclick="toggleLocationFilter(this)"><span class="check"></span> Beverly Hills, CA</div>
-          <div class="filter-option" data-value="Miami Beach" onclick="toggleLocationFilter(this)"><span class="check"></span> Miami Beach, FL</div>
-          <div class="filter-option" data-value="Paris" onclick="toggleLocationFilter(this)"><span class="check"></span> Paris, France</div>
-          <div class="filter-option" data-value="London" onclick="toggleLocationFilter(this)"><span class="check"></span> London, UK</div>
-          <div class="filter-option" data-value="Aspen" onclick="toggleLocationFilter(this)"><span class="check"></span> Aspen, CO</div>
-          <div class="filter-option" data-value="Hamptons" onclick="toggleLocationFilter(this)"><span class="check"></span> The Hamptons, NY</div>
         </div>
       </div>
 
@@ -1912,11 +1909,17 @@ const properties = [
 
 // ─── FILTER STATE ───
 let activeFilters = {
+  city: 'all',
   type: 'all',
   bedrooms: [],
-  locations: [],
+  neighborhoods: [],
   priceMin: null,
   priceMax: null
+};
+
+const cityNeighborhoods = {
+  Istanbul: ['Beşiktaş', 'Kadıköy', 'Nişantaşı', 'Cihangir', 'Galata', 'Bebek', 'Üsküdar'],
+  Bodrum: ['Yalıkavak', 'Göltürkbükü', 'Türkbükü', 'Bodrum Center']
 };
 
 // ─── SVG ICONS ───
@@ -2009,16 +2012,16 @@ function renderListings() {
 
 function getFilteredProperties() {
   return properties.filter(p => {
+    if (activeFilters.city !== 'all' && p.city !== activeFilters.city) return false;
     if (activeFilters.type !== 'all' && p.type !== activeFilters.type) return false;
     if (activeFilters.bedrooms.length > 0) {
-      const maxFilter = Math.max(...activeFilters.bedrooms);
       const match = activeFilters.bedrooms.some(b => {
         if (b === 4) return p.bedrooms >= 4;
         return p.bedrooms === b;
       });
       if (!match) return false;
     }
-    if (activeFilters.locations.length > 0 && !activeFilters.locations.includes(p.location)) return false;
+    if (activeFilters.neighborhoods.length > 0 && !activeFilters.neighborhoods.includes(p.location)) return false;
     if (activeFilters.priceMin && p.price < activeFilters.priceMin) return false;
     if (activeFilters.priceMax && p.price > activeFilters.priceMax) return false;
     return true;
@@ -2026,9 +2029,42 @@ function getFilteredProperties() {
 }
 
 // ─── FILTER CONTROLS ───
+function setCityFilter(city) {
+  activeFilters.city = city;
+  activeFilters.neighborhoods = [];
+  document.querySelectorAll('[data-city]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.city === city);
+  });
+  renderNeighborhoodDropdown();
+  renderListings();
+}
+
+function renderNeighborhoodDropdown() {
+  const container = document.getElementById('dd-neighborhoods');
+  let neighborhoods;
+  if (activeFilters.city === 'all') {
+    neighborhoods = [...cityNeighborhoods.Istanbul, ...cityNeighborhoods.Bodrum];
+  } else {
+    neighborhoods = cityNeighborhoods[activeFilters.city];
+  }
+  container.innerHTML = neighborhoods.map(n => {
+    const selected = activeFilters.neighborhoods.includes(n) ? ' selected' : '';
+    return `<div class="filter-option${selected}" data-value="${n}" onclick="toggleNeighborhoodFilter(this)"><span class="check"></span> ${n}</div>`;
+  }).join('');
+}
+
+function toggleNeighborhoodFilter(el) {
+  el.classList.toggle('selected');
+  const val = el.dataset.value;
+  const idx = activeFilters.neighborhoods.indexOf(val);
+  if (idx > -1) activeFilters.neighborhoods.splice(idx, 1);
+  else activeFilters.neighborhoods.push(val);
+  renderListings();
+}
+
 function setTypeFilter(type) {
   activeFilters.type = type;
-  document.querySelectorAll('.filter-type-btn').forEach(btn => {
+  document.querySelectorAll('[data-type]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.type === type);
   });
   renderListings();
@@ -2050,23 +2086,18 @@ function toggleBedroomFilter(el) {
   renderListings();
 }
 
-function toggleLocationFilter(el) {
-  el.classList.toggle('selected');
-  const val = el.dataset.value;
-  const idx = activeFilters.locations.indexOf(val);
-  if (idx > -1) activeFilters.locations.splice(idx, 1);
-  else activeFilters.locations.push(val);
-  renderListings();
-}
-
 function clearFilters() {
-  activeFilters = { type: 'all', bedrooms: [], locations: [], priceMin: null, priceMax: null };
-  document.querySelectorAll('.filter-type-btn').forEach(btn => {
+  activeFilters = { city: 'all', type: 'all', bedrooms: [], neighborhoods: [], priceMin: null, priceMax: null };
+  document.querySelectorAll('[data-city]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.city === 'all');
+  });
+  document.querySelectorAll('[data-type]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.type === 'all');
   });
   document.querySelectorAll('.filter-option.selected').forEach(opt => opt.classList.remove('selected'));
   document.getElementById('price-min').value = '';
   document.getElementById('price-max').value = '';
+  renderNeighborhoodDropdown();
   renderListings();
 }
 
@@ -2171,7 +2202,7 @@ function showDetail(id) {
 }
 
 // ─── PAGE NAVIGATION ───
-function showPage(page, typeFilter) {
+function showPage(page, typeFilter, cityFilter) {
   document.querySelectorAll('.page').forEach(p => {
     p.classList.remove('active');
     p.style.display = 'none';
@@ -2186,9 +2217,13 @@ function showPage(page, typeFilter) {
   });
 
   if (page === 'listings') {
+    if (cityFilter) {
+      setCityFilter(cityFilter);
+    }
     if (typeFilter) {
       setTypeFilter(typeFilter);
     }
+    renderNeighborhoodDropdown();
     renderListings();
   }
 
