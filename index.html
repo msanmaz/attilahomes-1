@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATTILA — Curated Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1917;
+  --bg-card: #1e1d1b;
+  --bg-elevated: #252422;
+  --text-primary: #f2ece0;
+  --text-secondary: #a09a8c;
+  --text-muted: #6b6560;
+  --accent: #c8a55c;
+  --accent-hover: #dbb96f;
+  --accent-muted: rgba(200,165,92,0.15);
+  --sage: #7a8c6e;
+  --rose: #b07272;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Outfit', sans-serif;
+  --radius: 2px;
+  --transition: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NOISE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+
+/* ─── NAVIGATION ─── */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 1.5rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.6s var(--transition);
+  background: transparent;
+}
+
+.nav.scrolled {
+  background: rgba(15,15,15,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 1rem 3rem;
+  border-bottom: 1px solid rgba(200,165,92,0.08);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 400;
+  position: relative;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.4s var(--transition);
+}
+
+.nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+/* ─── PAGE TRANSITIONS ─── */
+.page {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.5s var(--transition);
+}
+
+.page.active {
+  display: block;
+  opacity: 1;
+}
+
+/* ─── HERO SECTION ─── */
+.hero {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 6rem 3rem;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.35) saturate(0.8);
+  transform: scale(1.05);
+  animation: heroZoom 20s ease-in-out infinite alternate;
+}
+
+@keyframes heroZoom {
+  0% { transform: scale(1.05); }
+  100% { transform: scale(1.12); }
+}
+
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, var(--bg-primary) 0%, transparent 40%, transparent 60%, rgba(15,15,15,0.3) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+}
+
+.hero-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s var(--transition) 0.3s forwards;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 6.5rem);
+  font-weight: 300;
+  line-height: 1.05;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 1s var(--transition) 0.5s forwards;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 500px;
+  line-height: 1.7;
+  font-weight: 300;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s var(--transition) 0.7s forwards;
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-cta {
+  margin-top: 2.5rem;
+  display: flex;
+  gap: 1rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s var(--transition) 0.9s forwards;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s var(--transition);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(200,165,92,0.2);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid rgba(242,236,224,0.2);
+}
+
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ─── SCROLL INDICATOR ─── */
+.scroll-indicator {
+  position: absolute;
+  bottom: 3rem;
+  right: 3rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  opacity: 0;
+  animation: fadeUp 0.8s var(--transition) 1.2s forwards;
+}
+
+.scroll-indicator span {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  writing-mode: vertical-rl;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* ─── FEATURED SECTION ─── */
+.section {
+  padding: 6rem 3rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3.5rem;
+}
+
+.section-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 300;
+}
+
+.section-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.section-link:hover { color: var(--accent); }
+
+.section-link svg { transition: transform 0.3s; }
+.section-link:hover svg { transform: translateX(4px); }
+
+/* ─── PROPERTY CARDS ─── */
+.featured-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.featured-grid-secondary {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 1.5rem;
+}
+
+.property-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg-card);
+  border: 1px solid rgba(242,236,224,0.04);
+  transition: all 0.5s var(--transition);
+}
+
+.property-card:hover {
+  border-color: rgba(200,165,92,0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.property-card-image {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16/11;
+}
+
+.property-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--transition);
+}
+
+.property-card:hover .property-card-image img { transform: scale(1.06); }
+
+.property-card-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+  z-index: 2;
+}
+
+.badge-sale { background: var(--accent); color: var(--bg-primary); }
+.badge-rent { background: var(--sage); color: var(--text-primary); }
+
+.property-card-favorite {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(15,15,15,0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(242,236,224,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.3s;
+}
+
+.property-card-favorite:hover {
+  background: rgba(200,165,92,0.2);
+  border-color: var(--accent);
+}
+
+.property-card-favorite svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-width: 1.5;
+  transition: all 0.3s;
+}
+
+.property-card-favorite.active svg { fill: var(--rose); stroke: var(--rose); }
+
+.property-card-info { padding: 1.5rem; }
+
+.property-card-location {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.property-card-name {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 0.8rem;
+  line-height: 1.3;
+}
+
+.property-card-details {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.property-card-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.property-card-detail svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--text-muted);
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.property-card-price {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.property-card-price span {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ─── STATS RIBBON ─── */
+.stats-ribbon {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid rgba(242,236,224,0.06);
+  border-bottom: 1px solid rgba(242,236,224,0.06);
+}
+
+.stat-item {
+  padding: 3rem;
+  text-align: center;
+  border-right: 1px solid rgba(242,236,224,0.06);
+}
+
+.stat-item:last-child { border-right: none; }
+
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 300;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ─── NEIGHBORHOODS ─── */
+.neighborhoods-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.neighborhood-card {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  cursor: pointer;
+}
+
+.neighborhood-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--transition);
+  filter: brightness(0.5) saturate(0.7);
+}
+
+.neighborhood-card:hover img {
+  transform: scale(1.08);
+  filter: brightness(0.6) saturate(0.9);
+}
+
+.neighborhood-card-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
+  background: linear-gradient(0deg, rgba(15,15,15,0.7) 0%, transparent 60%);
+}
+
+.neighborhood-card-name {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  margin-bottom: 0.3rem;
+}
+
+.neighborhood-card-count {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ─── ABOUT SECTION ─── */
+.about-section {
+  display: grid;
+  grid-template-columns: 0.4fr 0.6fr;
+  gap: 4rem;
+  align-items: center;
+  padding: 6rem 3rem;
+  background: var(--bg-secondary);
+  border-top: 1px solid rgba(242,236,224,0.06);
+}
+
+.about-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.about-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: brightness(0.95);
+  transition: transform 0.8s var(--transition);
+}
+
+.about-image:hover img {
+  transform: scale(1.03);
+}
+
+.about-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(200,165,92,0.1);
+  pointer-events: none;
+}
+
+.about-content {
+  max-width: 600px;
+}
+
+.about-name {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.about-text {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.8;
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+
+.about-cta {
+  margin-top: 1.5rem;
+}
+
+/* ─── LISTINGS PAGE ─── */
+.listings-hero {
+  padding: 8rem 3rem 3rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid rgba(242,236,224,0.06);
+}
+
+.listings-hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+}
+
+.listings-hero-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+/* ─── FILTERS ─── */
+.filters-bar {
+  padding: 1.5rem 3rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid rgba(242,236,224,0.06);
+  position: sticky;
+  top: 60px;
+  z-index: 100;
+}
+
+.filters-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  position: relative;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(242,236,224,0.08);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filter-btn:hover, .filter-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.filter-btn svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.filter-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 220px;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(242,236,224,0.08);
+  padding: 0.5rem;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+}
+
+.filter-dropdown.open { display: block; }
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-option:hover {
+  background: var(--accent-muted);
+  color: var(--text-primary);
+}
+
+.filter-option.selected { color: var(--accent); }
+
+.filter-option .check {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.filter-option.selected .check {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.filter-option.selected .check::after {
+  content: '✓';
+  font-size: 0.6rem;
+  color: var(--bg-primary);
+}
+
+.filter-type-btns {
+  display: flex;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(242,236,224,0.08);
+  overflow: hidden;
+}
+
+.filter-type-btn {
+  padding: 0.7rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.filter-type-btn.active {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+.filter-type-btn:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 25%;
+  height: 50%;
+  width: 1px;
+  background: rgba(242,236,224,0.08);
+}
+
+.price-range-wrapper {
+  padding: 1rem 0.8rem;
+}
+
+.price-range-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+.price-range-inputs {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.price-input {
+  flex: 1;
+  padding: 0.5rem 0.6rem;
+  background: var(--bg-primary);
+  border: 1px solid rgba(242,236,224,0.08);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.price-input:focus { border-color: var(--accent); }
+
+.price-range-inputs span {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.filter-clear {
+  margin-left: auto;
+  padding: 0.7rem 1.2rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.filter-clear:hover { color: var(--rose); }
+
+.results-count {
+  padding: 1.5rem 3rem 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.results-count strong { color: var(--text-primary); font-weight: 500; }
+
+/* ─── LISTINGS GRID ─── */
+.listings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding: 2rem 3rem 6rem;
+}
+
+.listing-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(242,236,224,0.04);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.5s var(--transition);
+}
+
+.listing-card:hover {
+  border-color: rgba(200,165,92,0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.listing-card-image {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16/11;
+}
+
+.listing-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--transition);
+}
+
+.listing-card:hover .listing-card-image img { transform: scale(1.06); }
+
+.listing-card-badge {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.listing-card-info { padding: 1.3rem; }
+
+.listing-card-location {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.listing-card-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 0.6rem;
+  line-height: 1.3;
+}
+
+.listing-card-details {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.listing-card-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.listing-card-detail svg {
+  width: 13px;
+  height: 13px;
+  stroke: var(--text-muted);
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.listing-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(242,236,224,0.06);
+}
+
+.listing-card-price {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.listing-card-price span {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.listing-card-arrow {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(242,236,224,0.1);
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.listing-card:hover .listing-card-arrow {
+  border-color: var(--accent);
+  background: var(--accent-muted);
+}
+
+.listing-card-arrow svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--text-secondary);
+  fill: none;
+  stroke-width: 1.5;
+  transition: stroke 0.3s;
+}
+
+.listing-card:hover .listing-card-arrow svg { stroke: var(--accent); }
+
+/* ─── DETAIL PAGE ─── */
+.detail-page { padding-top: 5rem; }
+
+.detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 3rem;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.3s;
+  text-decoration: none;
+}
+
+.detail-back:hover { color: var(--accent); }
+
+.detail-back svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.detail-gallery {
+  display: grid;
+  grid-template-columns: 1.4fr 0.6fr;
+  gap: 0.5rem;
+  padding: 0 3rem;
+  height: 520px;
+}
+
+.detail-gallery-main {
+  overflow: hidden;
+  position: relative;
+}
+
+.detail-gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--transition);
+}
+
+.detail-gallery-main:hover img { transform: scale(1.03); }
+
+.detail-gallery-side {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.detail-gallery-side div {
+  overflow: hidden;
+  position: relative;
+}
+
+.detail-gallery-side img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--transition);
+}
+
+.detail-gallery-side div:hover img { transform: scale(1.05); }
+
+.gallery-count {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 0.4rem 0.8rem;
+  background: rgba(15,15,15,0.7);
+  backdrop-filter: blur(10px);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+}
+
+.detail-content {
+  display: grid;
+  grid-template-columns: 1.4fr 0.6fr;
+  gap: 3rem;
+  padding: 3rem;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.detail-badge {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.detail-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 300;
+  margin-bottom: 0.3rem;
+}
+
+.detail-location {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.detail-location svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.detail-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(242,236,224,0.06);
+}
+
+.detail-stat {
+  text-align: center;
+}
+
+.detail-stat-value {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.detail-stat-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.detail-description { margin-bottom: 2.5rem; }
+
+.detail-description h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.detail-description p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+.detail-features { margin-bottom: 2.5rem; }
+
+.detail-features h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem;
+  background: var(--bg-secondary);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.feature-item svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.5;
+  flex-shrink: 0;
+}
+
+/* ─── SIDEBAR ─── */
+.detail-sidebar {
+  position: sticky;
+  top: 6rem;
+  align-self: start;
+}
+
+.sidebar-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(242,236,224,0.06);
+  padding: 2rem;
+}
+
+.sidebar-price {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.sidebar-price-note {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-btn {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.sidebar-agent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(242,236,224,0.06);
+}
+
+.sidebar-agent-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+.sidebar-agent-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.1rem;
+}
+
+.sidebar-agent-title {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  padding: 4rem 3rem 2rem;
+  border-top: 1px solid rgba(242,236,224,0.06);
+  background: var(--bg-secondary);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  margin-bottom: 1rem;
+}
+
+.footer-brand span { color: var(--accent); }
+
+.footer-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+.footer-col h4 {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 1.2rem;
+}
+
+.footer-col a {
+  display: block;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.8rem;
+  margin-bottom: 0.6rem;
+  transition: color 0.3s;
+}
+
+.footer-col a:hover { color: var(--accent); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(242,236,224,0.04);
+}
+
+.footer-bottom p {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* ─── ANIMATIONS ─── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity 0.7s var(--transition), transform 0.7s var(--transition);
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  .featured-grid, .featured-grid-secondary { grid-template-columns: 1fr; }
+  .about-section { grid-template-columns: 1fr; gap: 2rem; }
+  .listings-grid { grid-template-columns: repeat(2, 1fr); }
+  .detail-content { grid-template-columns: 1fr; }
+  .detail-gallery { grid-template-columns: 1fr; height: auto; }
+  .detail-gallery-side { grid-template-columns: 1fr 1fr; }
+  .neighborhoods-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+}
+
+@media (max-width: 768px) {
+  .nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .about-section { padding: 4rem 1.5rem; }
+  .hero { padding: 4rem 1.5rem; }
+  .section { padding: 4rem 1.5rem; }
+  .listings-grid { grid-template-columns: 1fr; padding: 2rem 1.5rem; }
+  .filters-bar { padding: 1rem 1.5rem; }
+  .detail-gallery { padding: 0 1.5rem; }
+  .detail-content { padding: 2rem 1.5rem; }
+  .stats-ribbon { grid-template-columns: 1fr 1fr; }
+  .detail-stats { grid-template-columns: 1fr 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .neighborhoods-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="nav" id="nav">
+  <div class="nav-logo" onclick="showPage('home')">ATTIL<span>A</span></div>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')" class="active" data-page="home">Home</a></li>
+    <li><a onclick="showPage('listings')" data-page="listings">Listings</a></li>
+    <li><a onclick="showPage('listings', 'sale')" data-page="listings">Buy</a></li>
+    <li><a onclick="showPage('listings', 'rent')" data-page="listings">Rent</a></li>
+    <li><a data-page="contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ═══ HOME PAGE ═══ -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1800&q=80" alt="Luxury home">
+    </div>
+    <div class="hero-content">
+      <div class="hero-label">Curated Living Spaces</div>
+      <h1 class="hero-title">Find Your<br><em>Exceptional</em> Home</h1>
+      <p class="hero-subtitle">Handpicked properties across the world's most coveted addresses. Where architecture meets aspiration.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" onclick="showPage('listings')">Explore Properties</a>
+        <a class="btn btn-outline" onclick="showPage('listings', 'rent')">Rental Collection</a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-ribbon fade-in">
+    <div class="stat-item">
+      <div class="stat-number">2,400+</div>
+      <div class="stat-label">Active Listings</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">180</div>
+      <div class="stat-label">Cities Worldwide</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">$4.2B</div>
+      <div class="stat-label">Properties Sold</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">98%</div>
+      <div class="stat-label">Client Satisfaction</div>
+    </div>
+  </div>
+
+  <!-- FEATURED PROPERTIES -->
+  <section class="section">
+    <div class="section-header fade-in">
+      <div>
+        <div class="section-label">Featured</div>
+        <h2 class="section-title">Editor's Selection</h2>
+      </div>
+      <a class="section-link" onclick="showPage('listings')">
+        View All Properties
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="featured-grid fade-in" id="featured-grid-1"></div>
+    <div class="featured-grid-secondary fade-in" id="featured-grid-2"></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about-section fade-in">
+    <div class="about-image">
+      <img src="assets/attila-portrait.jpg" alt="Attila Utkucan">
+    </div>
+    <div class="about-content">
+      <div class="section-label">About</div>
+      <h2 class="about-name">Attila Utkucan</h2>
+      <p class="about-text">An independent realtor rooted in Istanbul with deep knowledge of the Bodrum and Istanbul markets. Attila has built his reputation on an instinct for potential — finding value where others see wear, and character where others see age. His clients trust him for honest guidance, local insight, and an eye that sees what a property can become.</p>
+      <p class="about-text">Beyond brokerage, Attila is a hands-on developer specializing in the transformation of aging Istanbul apartments into modern living spaces. From sourcing neglected buildings in historic neighborhoods to overseeing every detail of renovation, he bridges the gap between vision and reality — delivering homes that honor their heritage while meeting contemporary standards.</p>
+      <div class="about-cta">
+        <a class="btn btn-outline">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEIGHBORHOODS -->
+  <section class="section" style="background: var(--bg-secondary);">
+    <div class="section-header fade-in">
+      <div>
+        <div class="section-label">Explore</div>
+        <h2 class="section-title">Neighborhoods</h2>
+      </div>
+    </div>
+    <div class="neighborhoods-grid fade-in">
+      <div class="neighborhood-card" onclick="showPage('listings')">
+        <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&q=80" alt="Manhattan">
+        <div class="neighborhood-card-content">
+          <div class="neighborhood-card-name">Manhattan</div>
+          <div class="neighborhood-card-count">124 Properties</div>
+        </div>
+      </div>
+      <div class="neighborhood-card" onclick="showPage('listings')">
+        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80" alt="Paris">
+        <div class="neighborhood-card-content">
+          <div class="neighborhood-card-name">Paris</div>
+          <div class="neighborhood-card-count">89 Properties</div>
+        </div>
+      </div>
+      <div class="neighborhood-card" onclick="showPage('listings')">
+        <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80" alt="London">
+        <div class="neighborhood-card-content">
+          <div class="neighborhood-card-name">London</div>
+          <div class="neighborhood-card-count">156 Properties</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">ATTIL<span>A</span></div>
+        <p class="footer-text">Curating the world's finest properties since 2012. Every listing is personally vetted by our team of architectural connoisseurs.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Properties</h4>
+        <a href="#" onclick="showPage('listings', 'sale')">For Sale</a>
+        <a href="#" onclick="showPage('listings', 'rent')">For Rent</a>
+        <a href="#">New Developments</a>
+        <a href="#">Luxury Collection</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+        <a href="#">Partners</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="#">Contact</a>
+        <a href="#">FAQ</a>
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ATTILA Real Estate. All rights reserved.</p>
+      <p>Designed with precision</p>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ═══ LISTINGS PAGE ═══ -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page" id="page-listings">
+
+  <div class="listings-hero">
+    <div class="section-label">Portfolio</div>
+    <h1 class="listings-hero-title">All Properties</h1>
+    <p class="listings-hero-subtitle">Browse our curated collection of exceptional residences</p>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-bar">
+    <div class="filters-row">
+      <div class="filter-type-btns">
+        <button class="filter-type-btn active" data-type="all" onclick="setTypeFilter('all')">All</button>
+        <button class="filter-type-btn" data-type="sale" onclick="setTypeFilter('sale')">For Sale</button>
+        <button class="filter-type-btn" data-type="rent" onclick="setTypeFilter('rent')">For Rent</button>
+      </div>
+
+      <div class="filter-group">
+        <button class="filter-btn" onclick="toggleDropdown('dd-bedrooms')">
+          Bedrooms
+          <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="filter-dropdown" id="dd-bedrooms">
+          <div class="filter-option" data-value="1" onclick="toggleBedroomFilter(this)"><span class="check"></span> 1 Bedroom</div>
+          <div class="filter-option" data-value="2" onclick="toggleBedroomFilter(this)"><span class="check"></span> 2 Bedrooms</div>
+          <div class="filter-option" data-value="3" onclick="toggleBedroomFilter(this)"><span class="check"></span> 3 Bedrooms</div>
+          <div class="filter-option" data-value="4" onclick="toggleBedroomFilter(this)"><span class="check"></span> 4+ Bedrooms</div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <button class="filter-btn" onclick="toggleDropdown('dd-price')">
+          Price Range
+          <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="filter-dropdown" id="dd-price">
+          <div class="price-range-wrapper">
+            <div class="price-range-label">Set range</div>
+            <div class="price-range-inputs">
+              <input type="number" class="price-input" id="price-min" placeholder="Min" oninput="applyFilters()">
+              <span>—</span>
+              <input type="number" class="price-input" id="price-max" placeholder="Max" oninput="applyFilters()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <button class="filter-btn" onclick="toggleDropdown('dd-location')">
+          Location
+          <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="filter-dropdown" id="dd-location">
+          <div class="filter-option" data-value="Manhattan" onclick="toggleLocationFilter(this)"><span class="check"></span> Manhattan, NY</div>
+          <div class="filter-option" data-value="Brooklyn" onclick="toggleLocationFilter(this)"><span class="check"></span> Brooklyn, NY</div>
+          <div class="filter-option" data-value="Beverly Hills" onclick="toggleLocationFilter(this)"><span class="check"></span> Beverly Hills, CA</div>
+          <div class="filter-option" data-value="Miami Beach" onclick="toggleLocationFilter(this)"><span class="check"></span> Miami Beach, FL</div>
+          <div class="filter-option" data-value="Paris" onclick="toggleLocationFilter(this)"><span class="check"></span> Paris, France</div>
+          <div class="filter-option" data-value="London" onclick="toggleLocationFilter(this)"><span class="check"></span> London, UK</div>
+          <div class="filter-option" data-value="Aspen" onclick="toggleLocationFilter(this)"><span class="check"></span> Aspen, CO</div>
+          <div class="filter-option" data-value="Hamptons" onclick="toggleLocationFilter(this)"><span class="check"></span> The Hamptons, NY</div>
+        </div>
+      </div>
+
+      <button class="filter-clear" onclick="clearFilters()">Clear All</button>
+    </div>
+  </div>
+
+  <div class="results-count" id="results-count"></div>
+  <div class="listings-grid" id="listings-grid"></div>
+
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>&copy; 2026 ATTILA Real Estate. All rights reserved.</p>
+      <p>Designed with precision</p>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ═══ DETAIL PAGE ═══ -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page" id="page-detail">
+  <div class="detail-page">
+    <a class="detail-back" onclick="showPage('listings')">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to Listings
+    </a>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ═══ JAVASCRIPT ═══ -->
+<!-- ═══════════════════════════════════════════ -->
+<script>
+// ─── PROPERTY DATA ───
+const properties = [
+  {
+    id: 1,
+    name: "The Obsidian Penthouse",
+    location: "Manhattan",
+    fullAddress: "432 Park Avenue, Manhattan, NY 10022",
+    type: "sale",
+    price: 18500000,
+    priceDisplay: "$18.5M",
+    bedrooms: 4,
+    bathrooms: 5,
+    sqft: 6200,
+    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=900&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80"
+    ],
+    description: "Perched 96 floors above Manhattan's skyline, this penthouse redefines vertical living. Floor-to-ceiling windows frame Central Park in every season — autumn foliage, winter snowscapes, spring blossoms — from a vantage point few will ever experience. The interiors, conceived by a Pritzker laureate, pair Calacatta marble with blackened steel and white oak, creating a dialogue between warmth and edge. A private elevator opens directly into the residence, where double-height ceilings and a cantilevered staircase anchor the social spaces. The primary suite occupies the entire south wing with a soaking tub carved from a single block of Pietra Grey marble.",
+    features: ["Private Elevator", "Central Park Views", "Chef's Kitchen", "Wine Cellar", "Smart Home System", "24/7 Concierge", "Heated Floors", "Private Terrace"],
+    agent: { name: "Victoria Chase", title: "Senior Partner", initials: "VC" },
+    featured: true
+  },
+  {
+    id: 2,
+    name: "Maison Lumière",
+    location: "Paris",
+    fullAddress: "16 Avenue Montaigne, 75008 Paris, France",
+    type: "sale",
+    price: 12800000,
+    priceDisplay: "€12.8M",
+    bedrooms: 5,
+    bathrooms: 4,
+    sqft: 5400,
+    image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=900&q=80",
+      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=900&q=80"
+    ],
+    description: "A Haussmann masterpiece on the Golden Triangle, Maison Lumière embodies Parisian elegance at its apex. Behind the sculpted limestone façade, herringbone parquet floors stretch through salons bathed in light from original tall windows with wrought-iron balconies. The property has been meticulously restored: ornamental plasterwork, marble fireplaces, and gilded mirrors coexist with seamlessly integrated contemporary comforts. The private garden — a rarity in the 8th arrondissement — offers a verdant refuge from the city's pulse.",
+    features: ["Private Garden", "Original Moldings", "Marble Fireplaces", "Wine Cave", "Staff Quarters", "Double Reception", "Terrace", "Cellar"],
+    agent: { name: "Jean-Pierre Moreau", title: "Director, European Division", initials: "JM" },
+    featured: true
+  },
+  {
+    id: 3,
+    name: "Horizon Villa",
+    location: "Beverly Hills",
+    fullAddress: "1200 Laurel Way, Beverly Hills, CA 90210",
+    type: "sale",
+    price: 24500000,
+    priceDisplay: "$24.5M",
+    bedrooms: 6,
+    bathrooms: 8,
+    sqft: 11200,
+    image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=900&q=80",
+      "https://images.unsplash.com/photo-1600566753051-f0b89df2dd90?w=900&q=80"
+    ],
+    description: "An architectural statement in the Trousdale Estates, Horizon Villa dissolves the boundary between interior and landscape. Walls of glass retract entirely, merging the great room with an infinity-edge pool that appears to spill into the Los Angeles basin below. The compound includes a detached guest house, a screening room with Dolby Atmos, and a motor court for six vehicles. Every surface — from the basalt cladding to the rift-sawn oak — was selected to weather gracefully under the California sun.",
+    features: ["Infinity Pool", "Guest House", "Home Theater", "6-Car Garage", "Outdoor Kitchen", "Gym & Spa", "City Views", "Smart Automation"],
+    agent: { name: "Marcus Sterling", title: "Luxury Specialist", initials: "MS" },
+    featured: true
+  },
+  {
+    id: 4,
+    name: "The Glass Loft",
+    location: "Brooklyn",
+    fullAddress: "55 Water Street, DUMBO, Brooklyn, NY 11201",
+    type: "rent",
+    price: 12500,
+    priceDisplay: "$12,500",
+    priceNote: "/month",
+    bedrooms: 2,
+    bathrooms: 2,
+    sqft: 2800,
+    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=900&q=80",
+      "https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?w=900&q=80"
+    ],
+    description: "Suspended between the Manhattan and Brooklyn Bridges in DUMBO's most iconic warehouse conversion, The Glass Loft captures the raw energy of New York's waterfront renaissance. Sixteen-foot ceilings, exposed timber beams, and polished concrete floors form the canvas; floor-to-ceiling industrial windows flood the space with light reflected off the East River. The building offers a curated amenity suite — a rooftop pool, a residents-only gallery space, and a workshop studio for makers and creators.",
+    features: ["River Views", "Rooftop Pool", "Pet Friendly", "Doorman", "Gym", "Roof Deck", "Bike Storage", "In-Unit Laundry"],
+    agent: { name: "Elena Rossi", title: "Rental Specialist", initials: "ER" },
+    featured: true
+  },
+  {
+    id: 5,
+    name: "Kensington Townhouse",
+    location: "London",
+    fullAddress: "12 Phillimore Gardens, Kensington, London W8 7QG",
+    type: "sale",
+    price: 9200000,
+    priceDisplay: "£9.2M",
+    bedrooms: 5,
+    bathrooms: 4,
+    sqft: 4800,
+    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=900&q=80",
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=900&q=80"
+    ],
+    description: "An immaculate white-stucco townhouse in one of Kensington's most prestigious garden squares. The Grade II listed property spans six storeys, each floor telling a different chapter — from the reception rooms with their 12-foot ceilings and bay windows to the lower-ground family kitchen opening onto a 60-foot private garden. Recent renovations have woven modern environmental systems behind the period architecture, including underfloor heating, a whole-house filtration system, and a discreet lift serving all levels.",
+    features: ["Private Garden", "Lift Access", "Period Features", "6 Storeys", "Staff Flat", "Wine Room", "Home Office", "Underfloor Heating"],
+    agent: { name: "Olivia Ashworth", title: "London Director", initials: "OA" }
+  },
+  {
+    id: 6,
+    name: "Ocean Terrace Residence",
+    location: "Miami Beach",
+    fullAddress: "321 Ocean Drive, Miami Beach, FL 33139",
+    type: "rent",
+    price: 18000,
+    priceDisplay: "$18,000",
+    priceNote: "/month",
+    bedrooms: 3,
+    bathrooms: 3,
+    sqft: 3200,
+    image: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=900&q=80"
+    ],
+    description: "Wake to the sound of Atlantic waves in this oceanfront residence where tropical modernism meets art deco heritage. A wraparound terrace frames panoramic views from South Pointe to the horizon — perfect for watching cruise ships glide past at sunset. Inside, Italian porcelain floors, a Boffi kitchen, and floor-to-ceiling windows create a luminous, resort-like atmosphere. The building's amenities rival any five-star hotel: beach service, a spa with hammam, a residents' restaurant, and a bayfront marina.",
+    features: ["Ocean Views", "Beach Access", "Spa & Hammam", "Valet Parking", "Residents' Restaurant", "Marina Access", "Pool Deck", "Concierge"],
+    agent: { name: "Sofia Rivera", title: "Miami Portfolio Manager", initials: "SR" }
+  },
+  {
+    id: 7,
+    name: "Alpine Chalet Noir",
+    location: "Aspen",
+    fullAddress: "700 Ute Avenue, Aspen, CO 81611",
+    type: "sale",
+    price: 15700000,
+    priceDisplay: "$15.7M",
+    bedrooms: 5,
+    bathrooms: 6,
+    sqft: 7800,
+    image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=900&q=80",
+      "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=900&q=80"
+    ],
+    description: "A darkly refined mountain retreat where charred timber, raw stone, and bronze meet the drama of the Elk Mountains. Chalet Noir occupies a private promontory with ski-in/ski-out access to Aspen Mountain and unobstructed views across the Roaring Fork Valley. The double-height great room centres on a monolithic stone fireplace; above, a mezzanine library and lounge offer a quieter register. Outside, a heated infinity-edge pool steams against the snow, and a stone-clad spa includes a cedar sauna, cold plunge, and treatment room.",
+    features: ["Ski-In/Ski-Out", "Heated Pool", "Home Spa", "Wine Vault", "Fireplace Suites", "Mountain Views", "Heated Driveway", "Mudroom"],
+    agent: { name: "Jackson Pierce", title: "Mountain Division", initials: "JP" }
+  },
+  {
+    id: 8,
+    name: "Dune House",
+    location: "Hamptons",
+    fullAddress: "44 Further Lane, East Hampton, NY 11937",
+    type: "rent",
+    price: 85000,
+    priceDisplay: "$85,000",
+    priceNote: "/month",
+    bedrooms: 7,
+    bathrooms: 8,
+    sqft: 9500,
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=900&q=80",
+      "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=900&q=80"
+    ],
+    description: "On Further Lane's most private stretch, Dune House sits between the Atlantic and a three-acre meadow of native grasses. The shingle-and-glass compound was designed to disappear into its landscape: low-slung volumes clad in weathered cedar, green roofs planted with sedum, and a boardwalk threading through protected dunes to a private beach. Seven bedroom suites ensure each guest has a world of their own; the primary suite occupies a standalone pavilion with its own courtyard, outdoor shower, and uninterrupted ocean horizon.",
+    features: ["Private Beach", "Tennis Court", "Heated Pool", "Guest Cottage", "Green Roof", "Outdoor Shower", "Meadow Gardens", "Chef's Kitchen"],
+    agent: { name: "Caroline Webb", title: "Hamptons Director", initials: "CW" }
+  },
+  {
+    id: 9,
+    name: "Tribeca Industrial Loft",
+    location: "Manhattan",
+    fullAddress: "60 White Street, Tribeca, NY 10013",
+    type: "rent",
+    price: 22000,
+    priceDisplay: "$22,000",
+    priceNote: "/month",
+    bedrooms: 3,
+    bathrooms: 2,
+    sqft: 4100,
+    image: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?w=900&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=80"
+    ],
+    description: "A full-floor loft in a converted Tribeca spice warehouse, where 14-foot coffered ceilings and cast-iron columns coexist with a rigorous contemporary renovation. The living space is a single unbroken volume — 65 feet of gallery-worthy wall space punctuated by oversized arched windows. The chef's kitchen, with its Gaggenau suite and Calacatta island, anchors the social axis. Three bedrooms are tucked behind Corten steel barn doors, each with en-suite baths clad in honed basalt.",
+    features: ["Full Floor", "14ft Ceilings", "Cast Iron Columns", "Gallery Walls", "Chef's Kitchen", "Doorman", "Storage", "Bike Room"],
+    agent: { name: "Victoria Chase", title: "Senior Partner", initials: "VC" }
+  },
+  {
+    id: 10,
+    name: "The Mews Collection",
+    location: "London",
+    fullAddress: "4 Bathurst Mews, Hyde Park, London W2 2SB",
+    type: "rent",
+    price: 8500,
+    priceDisplay: "£8,500",
+    priceNote: "/month",
+    bedrooms: 2,
+    bathrooms: 2,
+    sqft: 1800,
+    image: "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=900&q=80",
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=900&q=80"
+    ],
+    description: "Tucked behind Hyde Park in a cobblestoned mews, this converted carriage house blends Georgian charm with contemporary warmth. A double-height living area with exposed brick and a steel-framed mezzanine creates a sense of volume unusual for mews properties. The kitchen, with its marble-topped island and brass fixtures, opens to a courtyard garden wrapped in climbing jasmine. Upstairs, two bedroom suites sit under the original timber roof trusses, their skylights framing passing London clouds.",
+    features: ["Courtyard Garden", "Mezzanine", "Exposed Brick", "Skylights", "Underfloor Heating", "Close to Hyde Park", "Quiet Street", "Period Charm"],
+    agent: { name: "Olivia Ashworth", title: "London Director", initials: "OA" }
+  },
+  {
+    id: 11,
+    name: "Palazzo del Sol",
+    location: "Miami Beach",
+    fullAddress: "6800 Fisher Island Dr, Miami Beach, FL 33109",
+    type: "sale",
+    price: 33000000,
+    priceDisplay: "$33M",
+    bedrooms: 7,
+    bathrooms: 9,
+    sqft: 10200,
+    image: "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80",
+      "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=900&q=80"
+    ],
+    description: "On the southern tip of Fisher Island — accessible only by private ferry — Palazzo del Sol commands 200 feet of direct waterfront with panoramic views of the Government Cut shipping channel and the open Atlantic. This ground-floor palazzo features a private pool, summer kitchen, and a 3,000-square-foot rooftop terrace with a second pool and cabana. Interior design draws from Mediterranean modernism: Venetian plaster walls, terrazzo floors, and vaulted ceilings that channel the Amalfi Coast.",
+    features: ["Waterfront", "2 Pools", "Rooftop Terrace", "Private Ferry", "Summer Kitchen", "Venetian Plaster", "Smart Home", "3-Car Garage"],
+    agent: { name: "Sofia Rivera", title: "Miami Portfolio Manager", initials: "SR" }
+  },
+  {
+    id: 12,
+    name: "Le Jardin Caché",
+    location: "Paris",
+    fullAddress: "8 Rue de Furstenberg, 75006 Paris, France",
+    type: "rent",
+    price: 9500,
+    priceDisplay: "€9,500",
+    priceNote: "/month",
+    bedrooms: 2,
+    bathrooms: 2,
+    sqft: 1600,
+    image: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=900&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&q=80",
+      "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=900&q=80",
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=900&q=80"
+    ],
+    description: "On Saint-Germain's most picturesque square — where Delacroix once painted — this apartment occupies the premier étage of a 17th-century hôtel particulier. Tall French windows open to the paulownia trees below; inside, original plank floors, limestone mantelpieces, and boiserie panels create the quintessential Rive Gauche atmosphere. A discreet renovation has added a chef-grade kitchen, walk-in rainfall showers, and a climate system hidden within the ceiling mouldings. The building's hidden courtyard garden is shared among just four residents.",
+    features: ["Courtyard Garden", "Period Details", "Chef's Kitchen", "Concierge", "Quiet Square", "Walk-in Showers", "Boiserie Panels", "Cellar Storage"],
+    agent: { name: "Jean-Pierre Moreau", title: "Director, European Division", initials: "JM" }
+  }
+];
+
+// ─── FILTER STATE ───
+let activeFilters = {
+  type: 'all',
+  bedrooms: [],
+  locations: [],
+  priceMin: null,
+  priceMax: null
+};
+
+// ─── SVG ICONS ───
+const icons = {
+  bed: '<svg viewBox="0 0 24 24"><path d="M3 7v10M21 7v10M3 13h18M5 13V7a2 2 0 012-2h10a2 2 0 012 2v6"/></svg>',
+  bath: '<svg viewBox="0 0 24 24"><path d="M4 12h16a1 1 0 011 1v3a4 4 0 01-4 4H7a4 4 0 01-4-4v-3a1 1 0 011-1zM6 12V5a2 2 0 012-2h1"/></svg>',
+  sqft: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 3v18"/></svg>',
+  heart: '<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
+  arrow: '<svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>',
+  pin: '<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  check: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+};
+
+// ─── RENDER PROPERTY CARD ───
+function renderPropertyCard(prop, size = 'normal') {
+  const priceNote = prop.priceNote || '';
+  return `
+    <div class="property-card" onclick="showDetail(${prop.id})">
+      <div class="property-card-image">
+        <img src="${prop.image}" alt="${prop.name}" loading="lazy">
+        <div class="property-card-badge badge-${prop.type}">${prop.type === 'sale' ? 'For Sale' : 'For Rent'}</div>
+        <div class="property-card-favorite" onclick="event.stopPropagation(); this.classList.toggle('active')">
+          ${icons.heart}
+        </div>
+      </div>
+      <div class="property-card-info">
+        <div class="property-card-location">${prop.location}</div>
+        <div class="property-card-name">${prop.name}</div>
+        <div class="property-card-details">
+          <span class="property-card-detail">${icons.bed} ${prop.bedrooms} Bed</span>
+          <span class="property-card-detail">${icons.bath} ${prop.bathrooms} Bath</span>
+          <span class="property-card-detail">${icons.sqft} ${prop.sqft.toLocaleString()} ft²</span>
+        </div>
+        <div class="property-card-price">${prop.priceDisplay} <span>${priceNote}</span></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderListingCard(prop) {
+  const priceNote = prop.priceNote || '';
+  return `
+    <div class="listing-card" onclick="showDetail(${prop.id})">
+      <div class="listing-card-image">
+        <img src="${prop.image}" alt="${prop.name}" loading="lazy">
+        <div class="listing-card-badge badge-${prop.type}">${prop.type === 'sale' ? 'For Sale' : 'For Rent'}</div>
+      </div>
+      <div class="listing-card-info">
+        <div class="listing-card-location">${prop.location}</div>
+        <div class="listing-card-name">${prop.name}</div>
+        <div class="listing-card-details">
+          <span class="listing-card-detail">${icons.bed} ${prop.bedrooms}</span>
+          <span class="listing-card-detail">${icons.bath} ${prop.bathrooms}</span>
+          <span class="listing-card-detail">${icons.sqft} ${prop.sqft.toLocaleString()} ft²</span>
+        </div>
+        <div class="listing-card-footer">
+          <div class="listing-card-price">${prop.priceDisplay} <span>${priceNote}</span></div>
+          <div class="listing-card-arrow">${icons.arrow}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── RENDER FEATURED ───
+function renderFeatured() {
+  const featured = properties.filter(p => p.featured);
+  document.getElementById('featured-grid-1').innerHTML = featured.slice(0, 2).map(p => renderPropertyCard(p)).join('');
+  document.getElementById('featured-grid-2').innerHTML = featured.slice(2, 4).map(p => renderPropertyCard(p)).join('');
+}
+
+// ─── RENDER LISTINGS ───
+function renderListings() {
+  const filtered = getFilteredProperties();
+  const grid = document.getElementById('listings-grid');
+  const count = document.getElementById('results-count');
+
+  grid.innerHTML = filtered.map(p => renderListingCard(p)).join('');
+  count.innerHTML = `Showing <strong>${filtered.length}</strong> of ${properties.length} properties`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 4rem 0;">
+        <p style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.5rem;">No properties match your criteria</p>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Try adjusting your filters to see more results</p>
+      </div>
+    `;
+  }
+}
+
+function getFilteredProperties() {
+  return properties.filter(p => {
+    if (activeFilters.type !== 'all' && p.type !== activeFilters.type) return false;
+    if (activeFilters.bedrooms.length > 0) {
+      const maxFilter = Math.max(...activeFilters.bedrooms);
+      const match = activeFilters.bedrooms.some(b => {
+        if (b === 4) return p.bedrooms >= 4;
+        return p.bedrooms === b;
+      });
+      if (!match) return false;
+    }
+    if (activeFilters.locations.length > 0 && !activeFilters.locations.includes(p.location)) return false;
+    if (activeFilters.priceMin && p.price < activeFilters.priceMin) return false;
+    if (activeFilters.priceMax && p.price > activeFilters.priceMax) return false;
+    return true;
+  });
+}
+
+// ─── FILTER CONTROLS ───
+function setTypeFilter(type) {
+  activeFilters.type = type;
+  document.querySelectorAll('.filter-type-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === type);
+  });
+  renderListings();
+}
+
+function toggleDropdown(id) {
+  const dd = document.getElementById(id);
+  const wasOpen = dd.classList.contains('open');
+  document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('open'));
+  if (!wasOpen) dd.classList.add('open');
+}
+
+function toggleBedroomFilter(el) {
+  el.classList.toggle('selected');
+  const val = parseInt(el.dataset.value);
+  const idx = activeFilters.bedrooms.indexOf(val);
+  if (idx > -1) activeFilters.bedrooms.splice(idx, 1);
+  else activeFilters.bedrooms.push(val);
+  renderListings();
+}
+
+function toggleLocationFilter(el) {
+  el.classList.toggle('selected');
+  const val = el.dataset.value;
+  const idx = activeFilters.locations.indexOf(val);
+  if (idx > -1) activeFilters.locations.splice(idx, 1);
+  else activeFilters.locations.push(val);
+  renderListings();
+}
+
+function clearFilters() {
+  activeFilters = { type: 'all', bedrooms: [], locations: [], priceMin: null, priceMax: null };
+  document.querySelectorAll('.filter-type-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === 'all');
+  });
+  document.querySelectorAll('.filter-option.selected').forEach(opt => opt.classList.remove('selected'));
+  document.getElementById('price-min').value = '';
+  document.getElementById('price-max').value = '';
+  renderListings();
+}
+
+function applyFilters() {
+  const min = document.getElementById('price-min').value;
+  const max = document.getElementById('price-max').value;
+  activeFilters.priceMin = min ? parseInt(min) : null;
+  activeFilters.priceMax = max ? parseInt(max) : null;
+  renderListings();
+}
+
+// ─── DETAIL PAGE ───
+function showDetail(id) {
+  const prop = properties.find(p => p.id === id);
+  if (!prop) return;
+
+  const priceNote = prop.type === 'rent' ? 'Per month, furnished' : 'Asking price, exclusive';
+
+  document.getElementById('detail-content').innerHTML = `
+    <div class="detail-gallery">
+      <div class="detail-gallery-main">
+        <img src="${prop.images[0]}" alt="${prop.name}">
+      </div>
+      <div class="detail-gallery-side">
+        <div><img src="${prop.images[1]}" alt="${prop.name}"></div>
+        <div>
+          <img src="${prop.images[2]}" alt="${prop.name}">
+          <div class="gallery-count">${prop.images.length}+ Photos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-content">
+      <div>
+        <div class="detail-header">
+          <div>
+            <div class="detail-badge badge-${prop.type}">${prop.type === 'sale' ? 'For Sale' : 'For Rent'}</div>
+          </div>
+        </div>
+        <h1 class="detail-title">${prop.name}</h1>
+        <div class="detail-location">
+          ${icons.pin}
+          ${prop.fullAddress}
+        </div>
+
+        <div class="detail-stats">
+          <div class="detail-stat">
+            <div class="detail-stat-value">${prop.bedrooms}</div>
+            <div class="detail-stat-label">Bedrooms</div>
+          </div>
+          <div class="detail-stat">
+            <div class="detail-stat-value">${prop.bathrooms}</div>
+            <div class="detail-stat-label">Bathrooms</div>
+          </div>
+          <div class="detail-stat">
+            <div class="detail-stat-value">${prop.sqft.toLocaleString()}</div>
+            <div class="detail-stat-label">Sq. Feet</div>
+          </div>
+          <div class="detail-stat">
+            <div class="detail-stat-value">${prop.type === 'sale' ? 'Freehold' : 'Lease'}</div>
+            <div class="detail-stat-label">Tenure</div>
+          </div>
+        </div>
+
+        <div class="detail-description">
+          <h3>About This Property</h3>
+          <p>${prop.description}</p>
+        </div>
+
+        <div class="detail-features">
+          <h3>Features & Amenities</h3>
+          <div class="features-grid">
+            ${prop.features.map(f => `
+              <div class="feature-item">
+                ${icons.check}
+                ${f}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-price">${prop.priceDisplay}</div>
+          <div class="sidebar-price-note">${priceNote}</div>
+          <button class="btn btn-primary sidebar-btn">${prop.type === 'sale' ? 'Schedule Viewing' : 'Apply Now'}</button>
+          <button class="btn btn-outline sidebar-btn">Request Info</button>
+          <div class="sidebar-agent">
+            <div class="sidebar-agent-avatar">${prop.agent.initials}</div>
+            <div>
+              <div class="sidebar-agent-name">${prop.agent.name}</div>
+              <div class="sidebar-agent-title">${prop.agent.title}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  showPage('detail');
+}
+
+// ─── PAGE NAVIGATION ───
+function showPage(page, typeFilter) {
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+
+  const target = document.getElementById(`page-${page}`);
+  target.style.display = 'block';
+  requestAnimationFrame(() => target.classList.add('active'));
+
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === page);
+  });
+
+  if (page === 'listings') {
+    if (typeFilter) {
+      setTypeFilter(typeFilter);
+    }
+    renderListings();
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── SCROLL EFFECTS ───
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('nav');
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+
+  document.querySelectorAll('.fade-in').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.85) {
+      el.classList.add('visible');
+    }
+  });
+});
+
+// Close dropdowns on outside click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.filter-group')) {
+    document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+
+// ─── INIT ───
+renderFeatured();
+</script>
+
+</body>
+</html>
