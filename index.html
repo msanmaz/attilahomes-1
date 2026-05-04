@@ -358,7 +358,7 @@ body::before {
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  aspect-ratio: 3/4;
+  aspect-ratio: 16/9;
   border: 1px solid rgba(242,236,224,0.04);
   transition: all 0.5s var(--transition);
 }
@@ -419,10 +419,7 @@ body::before {
   cursor: pointer;
   z-index: 3;
   transition: all 0.3s;
-  opacity: 0;
 }
-
-.property-card:hover .property-card-favorite { opacity: 1; }
 
 .property-card-favorite:hover {
   background: rgba(200,165,92,0.3);
@@ -448,11 +445,7 @@ body::before {
   padding: 1.2rem;
   background: linear-gradient(0deg, rgba(10,10,8,0.92) 0%, rgba(10,10,8,0.6) 60%, transparent 100%);
   z-index: 2;
-  transform: translateY(1.8rem);
-  transition: transform 0.5s var(--transition);
 }
-
-.property-card:hover .property-card-info { transform: translateY(0); }
 
 .property-card-location {
   font-size: 0.55rem;
@@ -475,14 +468,6 @@ body::before {
   display: flex;
   gap: 0.8rem;
   margin-bottom: 0.5rem;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: all 0.4s var(--transition) 0.05s;
-}
-
-.property-card:hover .property-card-details {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .property-card-detail {
@@ -506,14 +491,6 @@ body::before {
   font-size: 1.1rem;
   color: var(--accent);
   font-weight: 500;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: all 0.4s var(--transition) 0.1s;
-}
-
-.property-card:hover .property-card-price {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .property-card-price span {
