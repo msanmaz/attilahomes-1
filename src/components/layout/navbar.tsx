@@ -54,8 +54,8 @@ export function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between transition-all duration-600 pt-[env(safe-area-inset-top)]",
           scrolled || menuOpen
-            ? "py-3 px-6 md:px-8 bg-bg-primary/92 backdrop-blur-[20px] border-b border-accent/8"
-            : "py-6 px-6 md:px-8 bg-transparent",
+            ? "py-3 px-6 md:px-8 bg-bg-primary/95 backdrop-blur-[20px] border-b border-accent/8"
+            : "py-4 px-6 md:py-6 md:px-8 bg-bg-primary/90 md:bg-transparent backdrop-blur-[12px] md:backdrop-blur-none",
         )}
         style={{ transitionTimingFunction: "var(--ease-smooth)" }}
       >
