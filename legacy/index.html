@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ATTILA — Curated Real Estate</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -652,6 +654,12 @@ body::before {
   border-bottom: 1px solid rgba(242,236,224,0.06);
 }
 
+.listings-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
 .listings-hero-title {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 5vw, 4rem);
@@ -663,6 +671,137 @@ body::before {
   color: var(--text-secondary);
   font-size: 0.9rem;
   font-weight: 300;
+}
+
+/* ─── VIEW TOGGLE ─── */
+.view-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.view-toggle {
+  display: flex;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(242,236,224,0.08);
+  overflow: hidden;
+}
+
+.view-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.view-toggle-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--text-muted);
+  fill: none;
+  stroke-width: 1.5;
+  transition: stroke 0.3s;
+}
+
+.view-toggle-btn.active {
+  background: var(--accent);
+}
+
+.view-toggle-btn.active svg {
+  stroke: var(--bg-primary);
+}
+
+.view-toggle-btn:not(.active):hover svg {
+  stroke: var(--accent);
+}
+
+.view-toggle-btn:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 25%;
+  height: 50%;
+  width: 1px;
+  background: rgba(242,236,224,0.08);
+}
+
+/* ─── SORT CONTROL ─── */
+.sort-control {
+  position: relative;
+}
+
+.sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(242,236,224,0.08);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.sort-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.sort-btn svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.sort-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 200px;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(242,236,224,0.08);
+  padding: 0.4rem;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+}
+
+.sort-dropdown.open { display: block; }
+
+.sort-option {
+  padding: 0.6rem 0.8rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sort-option:hover {
+  background: var(--accent-muted);
+  color: var(--text-primary);
+}
+
+.sort-option.active {
+  color: var(--accent);
+}
+
+.sort-option.active::after {
+  content: '✓';
+  font-size: 0.6rem;
 }
 
 /* ─── FILTERS ─── */
@@ -866,14 +1005,88 @@ body::before {
 
 .results-count strong { color: var(--text-primary); font-weight: 500; }
 
-/* ─── LISTINGS GRID ─── */
-.listings-grid {
+/* ─── LISTINGS LAYOUT MODES ─── */
+.listings-body {
+  position: relative;
+}
+
+.listings-body.grid-mode .listings-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   padding: 2rem 3rem 6rem;
 }
 
+.listings-body.grid-mode .listings-map-panel {
+  display: none;
+}
+
+.listings-body.map-mode {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: calc(100vh - 200px);
+  position: relative;
+}
+
+.listings-body.map-mode .listings-scroll-panel {
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.listings-body.map-mode .listings-scroll-panel::-webkit-scrollbar { width: 4px; }
+.listings-body.map-mode .listings-scroll-panel::-webkit-scrollbar-track { background: var(--bg-primary); }
+.listings-body.map-mode .listings-scroll-panel::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 2px; }
+
+.listings-body.map-mode .listings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
+}
+
+.listings-body.map-mode .results-count {
+  padding: 0 0 1rem;
+}
+
+.listings-body.map-mode .listing-card {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  transition: all 0.3s var(--transition);
+}
+
+.listings-body.map-mode .listing-card.map-highlight {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 8px 30px rgba(200,165,92,0.15);
+}
+
+.listings-body.map-mode .listing-card-image {
+  aspect-ratio: 1/1;
+}
+
+.listings-body.map-mode .listing-card-info {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.listings-body.map-mode .listing-card-name {
+  font-size: 1.1rem;
+}
+
+.listings-map-panel {
+  position: sticky;
+  top: 200px;
+  height: calc(100vh - 200px);
+  border-left: 1px solid rgba(242,236,224,0.06);
+}
+
+.listings-map-panel #listings-map {
+  width: 100%;
+  height: 100%;
+}
+
+/* ─── LISTING CARDS ─── */
 .listing-card {
   background: var(--bg-card);
   border: 1px solid rgba(242,236,224,0.04);
@@ -886,6 +1099,10 @@ body::before {
   border-color: rgba(200,165,92,0.15);
   transform: translateY(-4px);
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.listings-body.map-mode .listing-card:hover {
+  transform: none;
 }
 
 .listing-card-image {
@@ -1002,6 +1219,172 @@ body::before {
 }
 
 .listing-card:hover .listing-card-arrow svg { stroke: var(--accent); }
+
+/* ─── MAP STYLES ─── */
+.leaflet-container {
+  background: var(--bg-primary) !important;
+  font-family: var(--font-body) !important;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid rgba(242,236,224,0.1) !important;
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  background: var(--bg-elevated) !important;
+  color: var(--text-secondary) !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(242,236,224,0.06) !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-size: 14px !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--bg-card) !important;
+  color: var(--accent) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(15,15,15,0.8) !important;
+  color: var(--text-muted) !important;
+  font-size: 9px !important;
+  padding: 2px 6px !important;
+}
+
+.leaflet-control-attribution a { color: var(--text-muted) !important; }
+
+.map-price-marker {
+  background: var(--bg-primary);
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
+  padding: 3px 8px;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  transition: all 0.25s var(--transition);
+  position: relative;
+  cursor: pointer;
+}
+
+.map-price-marker::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--accent);
+}
+
+.map-price-marker.active,
+.map-price-marker:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
+  transform: scale(1.12);
+  z-index: 1000 !important;
+  box-shadow: 0 6px 25px rgba(200,165,92,0.4);
+}
+
+.map-price-marker.active::after,
+.map-price-marker:hover::after {
+  border-top-color: var(--accent);
+}
+
+/* Map Popup */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-card) !important;
+  border: 1px solid rgba(200,165,92,0.15) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.5) !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-card) !important;
+  border: 1px solid rgba(200,165,92,0.15) !important;
+  box-shadow: none !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  min-width: 240px;
+}
+
+.leaflet-popup-close-button {
+  color: var(--text-muted) !important;
+  font-size: 18px !important;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 4px 0 0 0 !important;
+  z-index: 10;
+}
+
+.leaflet-popup-close-button:hover {
+  color: var(--accent) !important;
+}
+
+.map-popup {
+  cursor: pointer;
+}
+
+.map-popup-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.map-popup-body {
+  padding: 0.8rem 1rem;
+}
+
+.map-popup-location {
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.25rem;
+}
+
+.map-popup-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+  line-height: 1.25;
+}
+
+.map-popup-details {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.map-popup-price {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.map-popup-price span {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
 
 /* ─── DETAIL PAGE ─── */
 .detail-page { padding-top: 5rem; }
@@ -1209,6 +1592,81 @@ body::before {
   flex-shrink: 0;
 }
 
+/* ─── DETAIL MAP ─── */
+.detail-map-section {
+  margin-bottom: 2.5rem;
+}
+
+.detail-map-section h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.detail-map-wrapper {
+  height: 300px;
+  border: 1px solid rgba(242,236,224,0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.detail-map-wrapper #detail-map {
+  width: 100%;
+  height: 100%;
+}
+
+.detail-map-address {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.detail-map-address svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.5;
+  flex-shrink: 0;
+}
+
+/* ─── NEARBY PLACES ─── */
+.nearby-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.nearby-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-secondary);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.nearby-item svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.5;
+  flex-shrink: 0;
+}
+
+.nearby-item .nearby-dist {
+  margin-left: auto;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
 /* ─── SIDEBAR ─── */
 .detail-sidebar {
   position: sticky;
@@ -1273,6 +1731,26 @@ body::before {
 .sidebar-agent-title {
   font-size: 0.7rem;
   color: var(--text-muted);
+}
+
+/* ─── SIDEBAR MINI MAP ─── */
+.sidebar-map-preview {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(242,236,224,0.06);
+}
+
+.sidebar-map-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.6rem;
+}
+
+.sidebar-mini-map {
+  height: 160px;
+  border: 1px solid rgba(242,236,224,0.06);
 }
 
 /* ─── FOOTER ─── */
@@ -1350,16 +1828,58 @@ body::before {
   transform: translateY(0);
 }
 
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.listing-card {
+  animation: cardEnter 0.5s var(--transition) both;
+}
+
+.listing-card:nth-child(1) { animation-delay: 0s; }
+.listing-card:nth-child(2) { animation-delay: 0.06s; }
+.listing-card:nth-child(3) { animation-delay: 0.12s; }
+.listing-card:nth-child(4) { animation-delay: 0.18s; }
+.listing-card:nth-child(5) { animation-delay: 0.24s; }
+.listing-card:nth-child(6) { animation-delay: 0.3s; }
+.listing-card:nth-child(7) { animation-delay: 0.36s; }
+.listing-card:nth-child(8) { animation-delay: 0.42s; }
+.listing-card:nth-child(9) { animation-delay: 0.48s; }
+.listing-card:nth-child(10) { animation-delay: 0.54s; }
+.listing-card:nth-child(11) { animation-delay: 0.6s; }
+.listing-card:nth-child(12) { animation-delay: 0.66s; }
+
 /* ─── RESPONSIVE ─── */
 @media (max-width: 1024px) {
   .featured-grid { grid-template-columns: repeat(2, 1fr); }
   .about-section { grid-template-columns: 1fr; gap: 2rem; }
-  .listings-grid { grid-template-columns: repeat(2, 1fr); }
+  .listings-body.grid-mode .listings-grid { grid-template-columns: repeat(2, 1fr); }
+  .listings-body.map-mode { grid-template-columns: 1fr; height: auto; }
+  .listings-body.map-mode .listings-map-panel {
+    height: 50vh;
+    position: relative;
+    top: 0;
+    border-left: none;
+    border-bottom: 1px solid rgba(242,236,224,0.06);
+    order: -1;
+  }
+  .listings-body.map-mode .listings-scroll-panel {
+    height: auto;
+    overflow: visible;
+  }
   .detail-content { grid-template-columns: 1fr; }
   .detail-gallery { grid-template-columns: 1fr; height: auto; }
   .detail-gallery-side { grid-template-columns: 1fr 1fr; }
   .neighborhoods-grid { grid-template-columns: 1fr 1fr; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .nearby-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 768px) {
@@ -1368,8 +1888,8 @@ body::before {
   .about-section { padding: 4rem 1.5rem; }
   .hero { padding: 4rem 1.5rem; }
   .section { padding: 4rem 1.5rem; }
-  .featured-grid { grid-template-columns: repeat(2, 1fr); }
-  .listings-grid { grid-template-columns: 1fr; padding: 2rem 1.5rem; }
+  .featured-grid { grid-template-columns: repeat(1, 1fr); }
+  .listings-body.grid-mode .listings-grid { grid-template-columns: 1fr; padding: 2rem 1.5rem; }
   .filters-bar { padding: 1rem 1.5rem; }
   .detail-gallery { padding: 0 1.5rem; }
   .detail-content { padding: 2rem 1.5rem; }
@@ -1378,6 +1898,14 @@ body::before {
   .features-grid { grid-template-columns: 1fr; }
   .neighborhoods-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
+  .listings-hero { padding: 7rem 1.5rem 2rem; }
+  .listings-hero-top { flex-direction: column; gap: 1rem; align-items: flex-start; }
+  .view-controls { width: 100%; justify-content: space-between; }
+  .results-count { padding: 1rem 1.5rem 0; }
+  .nearby-grid { grid-template-columns: 1fr; }
+  .listings-body.map-mode .listing-card {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 </head>
@@ -1547,9 +2075,37 @@ body::before {
 <div class="page" id="page-listings">
 
   <div class="listings-hero">
-    <div class="section-label">Portfolio</div>
-    <h1 class="listings-hero-title">All Properties</h1>
-    <p class="listings-hero-subtitle">Browse our curated collection of exceptional residences</p>
+    <div class="listings-hero-top">
+      <div>
+        <div class="section-label">Portfolio</div>
+        <h1 class="listings-hero-title">All Properties</h1>
+        <p class="listings-hero-subtitle">Browse our curated collection of exceptional residences</p>
+      </div>
+      <div class="view-controls">
+        <div class="sort-control">
+          <button class="sort-btn" onclick="toggleSortDropdown()">
+            <svg viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M9 18h6"/></svg>
+            <span id="sort-label">Featured</span>
+            <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="sort-dropdown" id="sort-dropdown">
+            <div class="sort-option active" data-sort="featured" onclick="setSort('featured')">Featured</div>
+            <div class="sort-option" data-sort="price-low" onclick="setSort('price-low')">Price: Low to High</div>
+            <div class="sort-option" data-sort="price-high" onclick="setSort('price-high')">Price: High to Low</div>
+            <div class="sort-option" data-sort="size" onclick="setSort('size')">Largest First</div>
+            <div class="sort-option" data-sort="beds" onclick="setSort('beds')">Most Bedrooms</div>
+          </div>
+        </div>
+        <div class="view-toggle">
+          <button class="view-toggle-btn active" data-view="grid" onclick="setViewMode('grid')" title="Grid View">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </button>
+          <button class="view-toggle-btn" data-view="map" onclick="setViewMode('map')" title="Map View">
+            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- FILTERS -->
@@ -1609,10 +2165,17 @@ body::before {
     </div>
   </div>
 
-  <div class="results-count" id="results-count"></div>
-  <div class="listings-grid" id="listings-grid"></div>
+  <div class="listings-body grid-mode" id="listings-body">
+    <div class="listings-scroll-panel">
+      <div class="results-count" id="results-count"></div>
+      <div class="listings-grid" id="listings-grid"></div>
+    </div>
+    <div class="listings-map-panel">
+      <div id="listings-map"></div>
+    </div>
+  </div>
 
-  <footer class="footer">
+  <footer class="footer" id="listings-footer">
     <div class="footer-bottom">
       <p>&copy; 2026 Attila Utkucan Real Estate. All rights reserved.</p>
       <p>Designed with precision</p>
@@ -1651,6 +2214,8 @@ const properties = [
     bedrooms: 4,
     bathrooms: 3,
     sqft: 3200,
+    lat: 41.0472,
+    lng: 29.0302,
     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
@@ -1659,6 +2224,11 @@ const properties = [
     ],
     description: "Commanding uninterrupted views of the Bosphorus strait from Kuruçeşme's most coveted stretch, this penthouse occupies the top two floors of a contemporary waterfront residence. Floor-to-ceiling glass frames the passing ships, the Asian shore, and the illuminated minarets of Üsküdar at dusk. The open-plan living space flows onto a wraparound terrace — ideal for hosting against Istanbul's most dramatic backdrop. Interiors blend polished concrete with warm walnut paneling and Aegean marble throughout.",
     features: ["Bosphorus Views", "Wraparound Terrace", "Private Elevator", "Smart Home", "Underfloor Heating", "2 Parking Spots", "Concierge", "Gym Access"],
+    nearby: [
+      { name: "Kuruçeşme Park", icon: "tree", dist: "200m" },
+      { name: "Bosphorus Ferry", icon: "anchor", dist: "500m" },
+      { name: "Beşiktaş Market", icon: "shop", dist: "1.2km" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" },
     featured: true
   },
@@ -1674,6 +2244,8 @@ const properties = [
     bedrooms: 3,
     bathrooms: 2,
     sqft: 1800,
+    lat: 40.9876,
+    lng: 29.0245,
     image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80",
@@ -1682,6 +2254,11 @@ const properties = [
     ],
     description: "A ground-up renovation in the heart of Moda, this apartment transforms a 1920s Armenian-era building into a contemporary residence that respects its bones. Original ceiling rosettes and hardwood floors have been restored; new elements — a chef's kitchen with Smeg appliances, walk-in rainfall showers, and a climate-controlled wine niche — are woven in without erasing the building's story. Steps from Moda's waterfront promenade, cafés, and the Kadıköy ferry terminal.",
     features: ["Period Restoration", "Chef's Kitchen", "High Ceilings", "Hardwood Floors", "Wine Niche", "Near Ferry", "Balcony", "Storage"],
+    nearby: [
+      { name: "Moda Promenade", icon: "walk", dist: "150m" },
+      { name: "Kadıköy Ferry", icon: "anchor", dist: "600m" },
+      { name: "Barlar Sokağı", icon: "glass", dist: "300m" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" },
     featured: true
   },
@@ -1697,6 +2274,8 @@ const properties = [
     bedrooms: 2,
     bathrooms: 2,
     sqft: 1400,
+    lat: 41.0487,
+    lng: 28.9942,
     image: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80",
@@ -1705,6 +2284,11 @@ const properties = [
     ],
     description: "In Istanbul's most refined shopping district, this art deco apartment occupies the third floor of a 1930s landmark building. Geometric ironwork, terrazzo floors, and arched doorways have been preserved through a meticulous renovation. The living room opens to a south-facing balcony overlooking Abdi İpekçi — the city's answer to Avenue Montaigne. Two bedrooms sit at the quieter rear, each with bespoke wardrobes and en-suite baths clad in Afyon marble.",
     features: ["Art Deco Details", "Terrazzo Floors", "South Balcony", "Marble Baths", "Central Location", "Elevator", "Cellar", "Doorman"],
+    nearby: [
+      { name: "Abdi İpekçi Cad.", icon: "shop", dist: "50m" },
+      { name: "Maçka Park", icon: "tree", dist: "400m" },
+      { name: "Nişantaşı Metro", icon: "train", dist: "250m" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" },
     featured: true
   },
@@ -1721,6 +2305,8 @@ const properties = [
     bedrooms: 2,
     bathrooms: 1,
     sqft: 1200,
+    lat: 41.0322,
+    lng: 28.9838,
     image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&q=80",
@@ -1729,6 +2315,11 @@ const properties = [
     ],
     description: "Perched above Cihangir's café-lined slopes with a sliver of Golden Horn view, this fully furnished loft captures the neighborhood's creative energy. Exposed brick walls, steel-framed windows, and polished concrete floors create an industrial canvas softened by vintage Turkish kilims and curated mid-century furniture. The open kitchen features a brass-topped island perfect for casual entertaining. Cihangir Mosque and Firuzağa's morning markets are a two-minute walk.",
     features: ["Furnished", "Golden Horn View", "Exposed Brick", "Pet Friendly", "Café District", "Washer/Dryer", "Gas Heating", "Rooftop Access"],
+    nearby: [
+      { name: "Firuzağa Mosque", icon: "landmark", dist: "100m" },
+      { name: "Cihangir Cafés", icon: "glass", dist: "50m" },
+      { name: "Taksim Square", icon: "train", dist: "800m" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" },
     featured: true
   },
@@ -1745,6 +2336,8 @@ const properties = [
     bedrooms: 1,
     bathrooms: 1,
     sqft: 850,
+    lat: 41.0256,
+    lng: 28.9743,
     image: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80",
@@ -1753,6 +2346,11 @@ const properties = [
     ],
     description: "A compact jewel in the shadow of the Galata Tower, this character apartment sits in a restored Genoese-era building on one of Istanbul's most atmospheric streets. Stone walls, a vaulted ceiling in the bedroom, and original timber shutters give it the feel of a private retreat within the city's most vibrant quarter. The open-plan living area is bathed in light from oversized sash windows looking towards the Golden Horn.",
     features: ["Historic Building", "Vaulted Ceilings", "Tower Views", "Furnished", "Central Location", "Quiet Street", "Character Details", "Laundry"],
+    nearby: [
+      { name: "Galata Tower", icon: "landmark", dist: "80m" },
+      { name: "Karaköy Tram", icon: "train", dist: "400m" },
+      { name: "SALT Galata", icon: "landmark", dist: "350m" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" }
   },
   {
@@ -1768,6 +2366,8 @@ const properties = [
     bedrooms: 3,
     bathrooms: 2,
     sqft: 2200,
+    lat: 41.0766,
+    lng: 29.0434,
     image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
@@ -1776,6 +2376,11 @@ const properties = [
     ],
     description: "On Bebek's storied waterfront — where Ottoman-era yalıs meet contemporary residences — this apartment offers the rare combination of Bosphorus proximity and village calm. Three bedrooms open to a continuous living space anchored by a bay window framing the strait. The building sits directly on the coastal road, steps from Bebek's legendary cafés, the Boğaziçi University campus, and the wooded paths of Rumeli Hisarı. A private parking bay and 24-hour security complete the package.",
     features: ["Bosphorus Proximity", "Bay Window", "3 Bedrooms", "Parking", "24/7 Security", "Near Cafés", "University Area", "Furnished Option"],
+    nearby: [
+      { name: "Bebek Sahil", icon: "walk", dist: "50m" },
+      { name: "Boğaziçi Uni", icon: "landmark", dist: "800m" },
+      { name: "Rumeli Hisarı", icon: "landmark", dist: "1.5km" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" }
   },
   {
@@ -1791,6 +2396,8 @@ const properties = [
     bedrooms: 2,
     bathrooms: 1,
     sqft: 1100,
+    lat: 41.0232,
+    lng: 29.0151,
     image: "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=1200&q=80",
@@ -1799,6 +2406,11 @@ const properties = [
     ],
     description: "A bright, newly finished flat on the Asian side offering a quieter rhythm of Istanbul life. Clean lines, engineered oak floors, and a minimalist kitchen with integrated appliances define the interior. The building is set back from the main road in a residential compound with landscaped gardens, a shared pool, and underground parking. Üsküdar's ferry terminal — and a 15-minute crossing to Beşiktaş — is a short bus ride away.",
     features: ["New Build", "Compound Living", "Shared Pool", "Underground Parking", "Gardens", "Near Metro", "Balcony", "Storage Unit"],
+    nearby: [
+      { name: "Üsküdar Ferry", icon: "anchor", dist: "2km" },
+      { name: "Fethi Paşa Park", icon: "tree", dist: "500m" },
+      { name: "Üsküdar Metro", icon: "train", dist: "1.5km" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" }
   },
   {
@@ -1813,6 +2425,8 @@ const properties = [
     bedrooms: 3,
     bathrooms: 2,
     sqft: 2000,
+    lat: 41.0432,
+    lng: 29.0036,
     image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
@@ -1821,6 +2435,11 @@ const properties = [
     ],
     description: "A duplex renovation showcasing Attila's signature style — stripped back to the structure and rebuilt with intention. The lower floor is an open social space where a blackened-steel staircase connects to three upper bedrooms. Original stone walls have been exposed and sealed; new interventions — a cantilevered mezzanine reading nook, a poured-concrete kitchen island — are clearly contemporary, creating a dialogue between old and new. Walking distance to Beşiktaş market and the Dolmabahçe waterfront.",
     features: ["Full Renovation", "Duplex Layout", "Exposed Stone", "Steel Staircase", "Near Market", "Mezzanine", "Concrete Kitchen", "Gas Heating"],
+    nearby: [
+      { name: "Beşiktaş Çarşı", icon: "shop", dist: "300m" },
+      { name: "Dolmabahçe Palace", icon: "landmark", dist: "600m" },
+      { name: "BJK Stadium", icon: "landmark", dist: "400m" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" }
   },
   {
@@ -1835,6 +2454,8 @@ const properties = [
     bedrooms: 5,
     bathrooms: 4,
     sqft: 4800,
+    lat: 37.1036,
+    lng: 27.2926,
     image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&q=80",
@@ -1843,6 +2464,11 @@ const properties = [
     ],
     description: "Crowning a private hillside above Yalıkavak marina, this villa commands 180-degree views of the Aegean — from the Greek islands on the horizon to the turquoise bays below. Whitewashed walls, natural stone terraces, and a 20-meter infinity pool dissolve the line between architecture and landscape. Five bedroom suites are distributed across three levels, each with its own terrace and sea view. The lower level houses a hammam, gym, and temperature-controlled wine room carved into the hillside rock.",
     features: ["Infinity Pool", "Sea Views", "Hammam & Gym", "Wine Room", "5 Terraces", "Private Garden", "Parking", "Near Marina"],
+    nearby: [
+      { name: "Yalıkavak Marina", icon: "anchor", dist: "1.2km" },
+      { name: "Tilkicik Beach", icon: "walk", dist: "800m" },
+      { name: "Village Center", icon: "shop", dist: "2km" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" }
   },
   {
@@ -1857,6 +2483,8 @@ const properties = [
     bedrooms: 4,
     bathrooms: 3,
     sqft: 3500,
+    lat: 37.0936,
+    lng: 27.3826,
     image: "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&q=80",
@@ -1865,6 +2493,11 @@ const properties = [
     ],
     description: "Set above the twin bays of Göltürkbükü — Bodrum's most sought-after summer address — this contemporary villa pairs clean Mediterranean lines with lush subtropical landscaping. The ground floor is a single open volume: living, dining, and kitchen flowing through retractable glass walls to a shaded outdoor lounge and pool deck. Upstairs, four bedroom suites open onto private balconies with unobstructed bay views. A stone path descends through the garden to the beach club below.",
     features: ["Bay Views", "Pool", "Beach Access", "Retractable Glass", "Garden", "Outdoor Lounge", "4 Balconies", "Near Beach Club"],
+    nearby: [
+      { name: "Göltürkbükü Beach", icon: "walk", dist: "400m" },
+      { name: "Beach Club", icon: "glass", dist: "500m" },
+      { name: "Türkbükü Center", icon: "shop", dist: "1.5km" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" }
   },
   {
@@ -1880,6 +2513,8 @@ const properties = [
     bedrooms: 4,
     bathrooms: 3,
     sqft: 3000,
+    lat: 37.0956,
+    lng: 27.3746,
     image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=1200&q=80",
@@ -1888,6 +2523,11 @@ const properties = [
     ],
     description: "A turnkey summer retreat in Türkbükü's quieter hillside, fully furnished for seasonal living. Bougainvillea-draped terraces wrap the whitewashed structure; a heated plunge pool and outdoor dining area sit beneath a mature olive canopy. Inside, natural linen upholstery, handmade ceramic tiles, and reclaimed timber beams create a relaxed coastal atmosphere. Available May through October — minimum three-month lease for the discerning seasonal tenant.",
     features: ["Seasonal Rental", "Heated Pool", "Furnished", "Olive Garden", "Outdoor Dining", "Sea Glimpses", "BBQ Area", "Parking"],
+    nearby: [
+      { name: "Türkbükü Beach", icon: "walk", dist: "600m" },
+      { name: "Macakızı Hotel", icon: "landmark", dist: "800m" },
+      { name: "Bodrum Center", icon: "shop", dist: "12km" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" }
   },
   {
@@ -1902,6 +2542,8 @@ const properties = [
     bedrooms: 3,
     bathrooms: 2,
     sqft: 1600,
+    lat: 37.0344,
+    lng: 27.4305,
     image: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&q=80",
@@ -1910,11 +2552,16 @@ const properties = [
     ],
     description: "A traditional Bodrum stone house — tangerine tree in the courtyard, whitewashed walls two feet thick, blue wooden shutters — brought back to life with a careful renovation. The original structure's footprint has been preserved: three interconnected rooms around a central courtyard, now reimagined as an open kitchen-living space, a private bedroom wing, and a guest suite. Modern comforts — air conditioning, a rainfall shower, heated floors — are invisible behind the vernacular charm. Five minutes on foot to Bodrum Castle and the marina.",
     features: ["Stone Construction", "Courtyard", "Full Renovation", "Near Castle", "Heated Floors", "Blue Shutters", "Tangerine Tree", "Walk to Marina"],
+    nearby: [
+      { name: "Bodrum Castle", icon: "landmark", dist: "400m" },
+      { name: "Bodrum Marina", icon: "anchor", dist: "500m" },
+      { name: "Bazaar Street", icon: "shop", dist: "200m" }
+    ],
     agent: { name: "Attila Utkucan", title: "Founder & Agent", initials: "AU" }
   }
 ];
 
-// ─── FILTER STATE ───
+// ─── STATE ───
 let activeFilters = {
   city: 'all',
   type: 'all',
@@ -1923,6 +2570,12 @@ let activeFilters = {
   priceMin: null,
   priceMax: null
 };
+
+let currentSort = 'featured';
+let currentView = 'grid';
+let listingsMap = null;
+let mapMarkers = {};
+let activeMarkerId = null;
 
 const cityNeighborhoods = {
   Istanbul: ['Beşiktaş', 'Kadıköy', 'Nişantaşı', 'Cihangir', 'Galata', 'Bebek', 'Üsküdar'],
@@ -1937,11 +2590,20 @@ const icons = {
   heart: '<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
   arrow: '<svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>',
   pin: '<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>',
-  check: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+  check: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+  tree: '<svg viewBox="0 0 24 24"><path d="M12 22V8M5 12l7-8 7 8M7 16l5-6 5 6"/></svg>',
+  anchor: '<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="3"/><path d="M12 22V8M5 12H2a10 10 0 0020 0h-3"/></svg>',
+  shop: '<svg viewBox="0 0 24 24"><path d="M3 9l1-4h16l1 4M3 9v11h18V9M9 21V13h6v8"/></svg>',
+  train: '<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16M12 3v8M8 19l-2 3M16 19l2 3"/><circle cx="8" cy="15" r="1"/><circle cx="16" cy="15" r="1"/></svg>',
+  walk: '<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M10 22l3-8 4 2M10 13l-2 9M14 13l2-3-4-2-3 3"/></svg>',
+  glass: '<svg viewBox="0 0 24 24"><path d="M8 21h8M12 15v6M5 3l1 9a6 6 0 0012 0l1-9"/></svg>',
+  landmark: '<svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10l7-7 7 7v11M9 21v-4h6v4"/></svg>'
 };
 
-// ─── RENDER PROPERTY CARD ───
-function renderPropertyCard(prop, size = 'normal') {
+const nearbyIcons = { tree: icons.tree, anchor: icons.anchor, shop: icons.shop, train: icons.train, walk: icons.walk, glass: icons.glass, landmark: icons.landmark };
+
+// ─── RENDER PROPERTY CARD (HOME) ───
+function renderPropertyCard(prop) {
   const priceNote = prop.priceNote || '';
   return `
     <div class="property-card" onclick="showDetail(${prop.id})">
@@ -1966,16 +2628,18 @@ function renderPropertyCard(prop, size = 'normal') {
   `;
 }
 
+// ─── RENDER LISTING CARD (LISTINGS PAGE) ───
 function renderListingCard(prop) {
   const priceNote = prop.priceNote || '';
   return `
-    <div class="listing-card" onclick="showDetail(${prop.id})">
+    <div class="listing-card" data-id="${prop.id}" onclick="showDetail(${prop.id})"
+         onmouseenter="highlightMarker(${prop.id})" onmouseleave="unhighlightMarker(${prop.id})">
       <div class="listing-card-image">
         <img src="${prop.image}" alt="${prop.name}" loading="lazy">
         <div class="listing-card-badge badge-${prop.type}">${prop.type === 'sale' ? 'For Sale' : 'For Rent'}</div>
       </div>
       <div class="listing-card-info">
-        <div class="listing-card-location">${prop.location}</div>
+        <div class="listing-card-location">${prop.location}, ${prop.city}</div>
         <div class="listing-card-name">${prop.name}</div>
         <div class="listing-card-details">
           <span class="listing-card-detail">${icons.bed} ${prop.bedrooms}</span>
@@ -2000,19 +2664,24 @@ function renderFeatured() {
 // ─── RENDER LISTINGS ───
 function renderListings() {
   const filtered = getFilteredProperties();
+  const sorted = sortProperties(filtered);
   const grid = document.getElementById('listings-grid');
   const count = document.getElementById('results-count');
 
-  grid.innerHTML = filtered.map(p => renderListingCard(p)).join('');
-  count.innerHTML = `Showing <strong>${filtered.length}</strong> of ${properties.length} properties`;
+  grid.innerHTML = sorted.map(p => renderListingCard(p)).join('');
+  count.innerHTML = `Showing <strong>${sorted.length}</strong> of ${properties.length} properties`;
 
-  if (filtered.length === 0) {
+  if (sorted.length === 0) {
     grid.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 4rem 0;">
         <p style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.5rem;">No properties match your criteria</p>
         <p style="color: var(--text-muted); font-size: 0.85rem;">Try adjusting your filters to see more results</p>
       </div>
     `;
+  }
+
+  if (currentView === 'map') {
+    updateListingsMap(sorted);
   }
 }
 
@@ -2032,6 +2701,155 @@ function getFilteredProperties() {
     if (activeFilters.priceMax && p.price > activeFilters.priceMax) return false;
     return true;
   });
+}
+
+function sortProperties(list) {
+  const arr = [...list];
+  switch (currentSort) {
+    case 'price-low': return arr.sort((a, b) => a.price - b.price);
+    case 'price-high': return arr.sort((a, b) => b.price - a.price);
+    case 'size': return arr.sort((a, b) => b.sqft - a.sqft);
+    case 'beds': return arr.sort((a, b) => b.bedrooms - a.bedrooms);
+    default: return arr;
+  }
+}
+
+// ─── SORT CONTROLS ───
+function toggleSortDropdown() {
+  const dd = document.getElementById('sort-dropdown');
+  dd.classList.toggle('open');
+}
+
+function setSort(sortKey) {
+  currentSort = sortKey;
+  document.querySelectorAll('.sort-option').forEach(o => {
+    o.classList.toggle('active', o.dataset.sort === sortKey);
+  });
+  document.getElementById('sort-label').textContent =
+    document.querySelector(`.sort-option[data-sort="${sortKey}"]`).textContent;
+  document.getElementById('sort-dropdown').classList.remove('open');
+  renderListings();
+}
+
+// ─── VIEW MODE ───
+function setViewMode(mode) {
+  currentView = mode;
+  const body = document.getElementById('listings-body');
+  const footer = document.getElementById('listings-footer');
+
+  document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === mode);
+  });
+
+  body.classList.remove('grid-mode', 'map-mode');
+  body.classList.add(mode + '-mode');
+
+  if (mode === 'map') {
+    footer.style.display = 'none';
+    requestAnimationFrame(() => {
+      initListingsMap();
+      const filtered = getFilteredProperties();
+      updateListingsMap(sortProperties(filtered));
+    });
+  } else {
+    footer.style.display = '';
+    if (listingsMap) {
+      listingsMap.remove();
+      listingsMap = null;
+      mapMarkers = {};
+    }
+  }
+}
+
+// ─── LISTINGS MAP ───
+function initListingsMap() {
+  if (listingsMap) return;
+
+  listingsMap = L.map('listings-map', {
+    zoomControl: true,
+    attributionControl: true
+  }).setView([39.5, 28.5], 6);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(listingsMap);
+}
+
+function updateListingsMap(filteredProps) {
+  if (!listingsMap) return;
+
+  Object.values(mapMarkers).forEach(m => m.remove());
+  mapMarkers = {};
+
+  if (filteredProps.length === 0) return;
+
+  const bounds = L.latLngBounds();
+
+  filteredProps.forEach(prop => {
+    const markerHtml = `<div class="map-price-marker" data-id="${prop.id}">${prop.priceDisplay}</div>`;
+    const icon = L.divIcon({
+      html: markerHtml,
+      className: '',
+      iconSize: null,
+      iconAnchor: [40, 36]
+    });
+
+    const marker = L.marker([prop.lat, prop.lng], { icon }).addTo(listingsMap);
+
+    const popupContent = `
+      <div class="map-popup" onclick="showDetail(${prop.id})">
+        <img class="map-popup-img" src="${prop.image}" alt="${prop.name}" loading="lazy">
+        <div class="map-popup-body">
+          <div class="map-popup-location">${prop.location}, ${prop.city}</div>
+          <div class="map-popup-name">${prop.name}</div>
+          <div class="map-popup-details">${prop.bedrooms} bed · ${prop.bathrooms} bath · ${prop.sqft.toLocaleString()} ft²</div>
+          <div class="map-popup-price">${prop.priceDisplay} <span>${prop.priceNote || ''}</span></div>
+        </div>
+      </div>
+    `;
+
+    marker.bindPopup(popupContent, {
+      maxWidth: 280,
+      minWidth: 240,
+      closeButton: true,
+      offset: [0, -20]
+    });
+
+    marker.on('mouseover', () => {
+      const el = marker.getElement();
+      if (el) el.querySelector('.map-price-marker').classList.add('active');
+      const card = document.querySelector(`.listing-card[data-id="${prop.id}"]`);
+      if (card) card.classList.add('map-highlight');
+    });
+
+    marker.on('mouseout', () => {
+      const el = marker.getElement();
+      if (el) el.querySelector('.map-price-marker').classList.remove('active');
+      const card = document.querySelector(`.listing-card[data-id="${prop.id}"]`);
+      if (card) card.classList.remove('map-highlight');
+    });
+
+    mapMarkers[prop.id] = marker;
+    bounds.extend([prop.lat, prop.lng]);
+  });
+
+  listingsMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+}
+
+function highlightMarker(id) {
+  const marker = mapMarkers[id];
+  if (!marker) return;
+  const el = marker.getElement();
+  if (el) el.querySelector('.map-price-marker').classList.add('active');
+}
+
+function unhighlightMarker(id) {
+  const marker = mapMarkers[id];
+  if (!marker) return;
+  const el = marker.getElement();
+  if (el) el.querySelector('.map-price-marker').classList.remove('active');
 }
 
 // ─── FILTER CONTROLS ───
@@ -2080,6 +2898,7 @@ function toggleDropdown(id) {
   const dd = document.getElementById(id);
   const wasOpen = dd.classList.contains('open');
   document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('open'));
+  document.getElementById('sort-dropdown').classList.remove('open');
   if (!wasOpen) dd.classList.add('open');
 }
 
@@ -2121,6 +2940,13 @@ function showDetail(id) {
   if (!prop) return;
 
   const priceNote = prop.type === 'rent' ? 'Per month, furnished' : 'Asking price, exclusive';
+  const nearbyHtml = (prop.nearby || []).map(n => `
+    <div class="nearby-item">
+      ${nearbyIcons[n.icon] || icons.pin}
+      ${n.name}
+      <span class="nearby-dist">${n.dist}</span>
+    </div>
+  `).join('');
 
   document.getElementById('detail-content').innerHTML = `
     <div class="detail-gallery">
@@ -2184,6 +3010,22 @@ function showDetail(id) {
             `).join('')}
           </div>
         </div>
+
+        <div class="detail-map-section">
+          <h3>Location</h3>
+          <div class="detail-map-wrapper">
+            <div id="detail-map"></div>
+          </div>
+          <div class="detail-map-address">
+            ${icons.pin}
+            ${prop.fullAddress}
+          </div>
+          ${nearbyHtml ? `
+            <div class="nearby-grid" style="margin-top: 1rem;">
+              ${nearbyHtml}
+            </div>
+          ` : ''}
+        </div>
       </div>
 
       <div class="detail-sidebar">
@@ -2199,16 +3041,98 @@ function showDetail(id) {
               <div class="sidebar-agent-title">${prop.agent.title}</div>
             </div>
           </div>
+          <div class="sidebar-map-preview">
+            <div class="sidebar-map-label">On the Map</div>
+            <div class="sidebar-mini-map" id="sidebar-mini-map"></div>
+          </div>
         </div>
       </div>
     </div>
   `;
 
   showPage('detail');
+
+  setTimeout(() => {
+    initDetailMap(prop);
+    initSidebarMiniMap(prop);
+  }, 100);
+}
+
+function initDetailMap(prop) {
+  const mapEl = document.getElementById('detail-map');
+  if (!mapEl) return;
+
+  const map = L.map('detail-map', {
+    zoomControl: true,
+    scrollWheelZoom: false,
+    attributionControl: false
+  }).setView([prop.lat, prop.lng], 15);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+
+  const markerHtml = `<div class="map-price-marker active">${prop.priceDisplay}</div>`;
+  const icon = L.divIcon({
+    html: markerHtml,
+    className: '',
+    iconSize: null,
+    iconAnchor: [40, 36]
+  });
+
+  L.marker([prop.lat, prop.lng], { icon }).addTo(map);
+
+  const radiusCircle = L.circle([prop.lat, prop.lng], {
+    radius: 300,
+    color: '#c8a55c',
+    weight: 1,
+    fillColor: '#c8a55c',
+    fillOpacity: 0.06,
+    dashArray: '4 6'
+  }).addTo(map);
+}
+
+function initSidebarMiniMap(prop) {
+  const mapEl = document.getElementById('sidebar-mini-map');
+  if (!mapEl) return;
+
+  const map = L.map('sidebar-mini-map', {
+    zoomControl: false,
+    scrollWheelZoom: false,
+    dragging: false,
+    attributionControl: false
+  }).setView([prop.lat, prop.lng], 13);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+
+  const pulseHtml = `
+    <div style="position:relative;width:12px;height:12px;">
+      <div style="position:absolute;inset:0;background:var(--accent);border-radius:50%;"></div>
+      <div style="position:absolute;inset:-4px;border:2px solid var(--accent);border-radius:50%;opacity:0.4;animation:pulse 2s infinite;"></div>
+    </div>
+  `;
+  const icon = L.divIcon({
+    html: pulseHtml,
+    className: '',
+    iconSize: [12, 12],
+    iconAnchor: [6, 6]
+  });
+
+  L.marker([prop.lat, prop.lng], { icon }).addTo(map);
 }
 
 // ─── PAGE NAVIGATION ───
 function showPage(page, typeFilter, cityFilter) {
+  if (currentView === 'map' && listingsMap && page !== 'listings') {
+    listingsMap.remove();
+    listingsMap = null;
+    mapMarkers = {};
+  }
+
   document.querySelectorAll('.page').forEach(p => {
     p.classList.remove('active');
     p.style.display = 'none';
@@ -2223,14 +3147,18 @@ function showPage(page, typeFilter, cityFilter) {
   });
 
   if (page === 'listings') {
-    if (cityFilter) {
-      setCityFilter(cityFilter);
-    }
-    if (typeFilter) {
-      setTypeFilter(typeFilter);
-    }
+    if (cityFilter) setCityFilter(cityFilter);
+    if (typeFilter) setTypeFilter(typeFilter);
     renderNeighborhoodDropdown();
     renderListings();
+
+    if (currentView === 'map') {
+      requestAnimationFrame(() => {
+        initListingsMap();
+        const filtered = getFilteredProperties();
+        updateListingsMap(sortProperties(filtered));
+      });
+    }
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2249,12 +3177,19 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// Close dropdowns on outside click
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.filter-group')) {
     document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('open'));
   }
+  if (!e.target.closest('.sort-control')) {
+    document.getElementById('sort-dropdown').classList.remove('open');
+  }
 });
+
+// ─── CSS FOR MAP PULSE ───
+const pulseStyle = document.createElement('style');
+pulseStyle.textContent = `@keyframes pulse { 0% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(2); opacity: 0; } 100% { transform: scale(1); opacity: 0; } }`;
+document.head.appendChild(pulseStyle);
 
 // ─── INIT ───
 renderFeatured();

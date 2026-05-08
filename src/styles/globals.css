@@ -1,0 +1,197 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #0f0f0f;
+  --color-bg-secondary: #1a1917;
+  --color-bg-card: #1e1d1b;
+  --color-bg-elevated: #252422;
+  --color-bg-input: #1a1917;
+
+  --color-text-primary: #f2ece0;
+  --color-text-secondary: #a09a8c;
+  --color-text-muted: #6b6560;
+
+  --color-accent: #c8a55c;
+  --color-accent-hover: #dbb96f;
+  --color-accent-muted: rgba(200, 165, 92, 0.15);
+  --color-accent-dim: rgba(200, 165, 92, 0.08);
+
+  --color-sage: #7a8c6e;
+  --color-sage-muted: rgba(122, 140, 110, 0.15);
+  --color-rose: #b07272;
+  --color-rose-muted: rgba(176, 114, 114, 0.15);
+  --color-blue: #6e8aab;
+  --color-blue-muted: rgba(110, 138, 171, 0.15);
+
+  --color-border: rgba(242, 236, 224, 0.06);
+  --color-border-hover: rgba(242, 236, 224, 0.12);
+
+  --font-display: "Cormorant Garamond", serif;
+  --font-body: "Outfit", sans-serif;
+
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─── BASE ─── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── NOISE TEXTURE OVERLAY ─── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-muted);
+  border-radius: 3px;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-zoom {
+  0% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes scroll-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scaleY(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── LEAFLET OVERRIDES ─── */
+.leaflet-container {
+  background: var(--color-bg-primary) !important;
+  font-family: var(--font-body) !important;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid var(--color-border) !important;
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  background: var(--color-bg-elevated) !important;
+  color: var(--color-text-secondary) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-size: 14px !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--color-bg-card) !important;
+  color: var(--color-accent) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(15, 15, 15, 0.8) !important;
+  color: var(--color-text-muted) !important;
+  font-size: 9px !important;
+  padding: 2px 6px !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--color-text-muted) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--color-bg-card) !important;
+  border: 1px solid rgba(200, 165, 92, 0.15) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5) !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--color-bg-card) !important;
+  border: 1px solid rgba(200, 165, 92, 0.15) !important;
+  box-shadow: none !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  min-width: 240px;
+}
+
+.leaflet-popup-close-button {
+  color: var(--color-text-muted) !important;
+  font-size: 18px !important;
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: var(--color-accent) !important;
+}
