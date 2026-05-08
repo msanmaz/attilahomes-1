@@ -17,12 +17,22 @@ export function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname, searchParams]);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
@@ -39,37 +49,71 @@ export function Navbar() {
   }
 
   return (
-    <nav
-      className={cn(
-        "fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between transition-all duration-600",
-        scrolled
-          ? "py-3 px-8 bg-bg-primary/92 backdrop-blur-[20px] border-b border-accent/8"
-          : "py-6 px-8 bg-transparent",
-      )}
-      style={{ transitionTimingFunction: "var(--ease-smooth)" }}
-    >
-      <Link href="/" className="font-display text-[1.8rem] font-light tracking-[0.35em] uppercase text-text-primary">
-        ATTIL<span className="text-accent">A</span>
-      </Link>
+    <>
+      <nav
+        className={cn(
+          "fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between transition-all duration-600 pt-[env(safe-area-inset-top)]",
+          scrolled || menuOpen
+            ? "py-3 px-6 md:px-8 bg-bg-primary/92 backdrop-blur-[20px] border-b border-accent/8"
+            : "py-6 px-6 md:px-8 bg-transparent",
+        )}
+        style={{ transitionTimingFunction: "var(--ease-smooth)" }}
+      >
+        <Link href="/" className="font-display text-[1.5rem] md:text-[1.8rem] font-light tracking-[0.35em] uppercase text-text-primary">
+          ATTIL<span className="text-accent">A</span>
+        </Link>
 
-      <ul className="hidden md:flex gap-10 list-none">
-        {NAV_LINKS.map((link) => (
-          <li key={link.href}>
+        {/* Desktop nav */}
+        <ul className="hidden md:flex gap-10 list-none">
+          {NAV_LINKS.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                className={cn(
+                  "relative text-[0.75rem] tracking-[0.15em] uppercase font-normal transition-colors duration-300",
+                  "after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-accent after:transition-[width] after:duration-400",
+                  isActive(link.href)
+                    ? "text-accent after:w-full"
+                    : "text-text-secondary hover:text-accent hover:after:w-full",
+                )}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="flex md:hidden flex-col justify-center items-center w-10 h-10 gap-1.5 cursor-pointer bg-transparent border-none"
+          aria-label="Menü"
+        >
+          <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "translate-y-[3.5px] rotate-45")} />
+          <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "opacity-0")} />
+          <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "-translate-y-[3.5px] -rotate-45")} />
+        </button>
+      </nav>
+
+      {/* Mobile menu overlay */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-[999] bg-bg-primary/98 backdrop-blur-[30px] flex flex-col items-center justify-center gap-8 pt-[env(safe-area-inset-top)] md:hidden">
+          {NAV_LINKS.map((link, i) => (
             <Link
+              key={link.href}
               href={link.href}
+              onClick={() => setMenuOpen(false)}
               className={cn(
-                "relative text-[0.75rem] tracking-[0.15em] uppercase font-normal transition-colors duration-300",
-                "after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-accent after:transition-[width] after:duration-400",
-                isActive(link.href)
-                  ? "text-accent after:w-full"
-                  : "text-text-secondary hover:text-accent hover:after:w-full",
+                "font-display text-[1.8rem] font-light tracking-[0.2em] uppercase transition-colors duration-300",
+                isActive(link.href) ? "text-accent" : "text-text-secondary",
               )}
+              style={{ animation: `fade-up 0.4s var(--ease-smooth) ${i * 0.08}s both` }}
             >
               {link.label}
             </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+          ))}
+        </div>
+      )}
+    </>
   );
 }

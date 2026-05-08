@@ -45,9 +45,9 @@ export function PropertyGallery({ images, name }: Props) {
   return (
     <>
       {/* Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_0.6fr] gap-2 px-8 h-auto lg:h-[520px]">
+      <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_0.6fr] gap-2 px-4 md:px-8 h-auto lg:h-[520px]">
         <div
-          className="relative overflow-hidden group cursor-pointer"
+          className="relative overflow-hidden group cursor-pointer h-[250px] md:h-[350px] lg:h-full"
           onClick={() => open(0)}
         >
           <Image
@@ -65,7 +65,7 @@ export function PropertyGallery({ images, name }: Props) {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-1 lg:grid-rows-2 gap-2">
+        <div className="grid grid-cols-2 lg:grid-cols-1 lg:grid-rows-2 gap-2 h-[140px] md:h-[180px] lg:h-full">
           {images.slice(1, 3).map((img, i) => (
             <div
               key={img.id}
@@ -124,7 +124,7 @@ export function PropertyGallery({ images, name }: Props) {
           </div>
 
           {/* Image */}
-          <div className="relative w-full h-full flex items-center justify-center px-20 py-20 z-[1]">
+          <div className="relative w-full h-full flex items-center justify-center px-4 py-16 md:px-20 md:py-20 z-[1]">
             <div
               className="relative max-w-[90vw] max-h-[80vh] w-full h-full"
               style={{ animation: "lightbox-img 0.35s var(--ease-smooth)" }}

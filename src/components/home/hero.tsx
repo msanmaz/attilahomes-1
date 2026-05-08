@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export function Hero() {
   return (
-    <section className="h-screen relative flex items-end px-8 pb-24 overflow-hidden">
+    <section className="h-[50vh] md:h-screen relative flex items-end px-6 md:px-8 pb-16 md:pb-24 overflow-hidden">
       <div className="absolute inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1800&q=80"
@@ -21,7 +21,7 @@ export function Hero() {
         <div className="text-[0.7rem] tracking-[0.3em] uppercase text-accent font-medium mb-6 animate-[fade-up_0.8s_var(--ease-smooth)_0.3s_both]">
           İstanbul &amp; Bodrum Emlak
         </div>
-        <h1 className="font-display text-[clamp(3rem,7vw,6.5rem)] font-light leading-[1.05] mb-6 animate-[fade-up_1s_var(--ease-smooth)_0.5s_both]">
+        <h1 className="font-display text-[clamp(2rem,7vw,6.5rem)] font-light leading-[1.05] mb-4 md:mb-6 animate-[fade-up_1s_var(--ease-smooth)_0.5s_both]">
           Hayalinizdeki
           <br />
           <em className="italic text-accent">Eşsiz</em> Evi Bulun
@@ -44,7 +44,7 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-12 right-8 z-10 flex flex-col items-center gap-3 animate-[fade-up_0.8s_var(--ease-smooth)_1.2s_both]">
+      <div className="hidden md:flex absolute bottom-12 right-8 z-10 flex-col items-center gap-3 animate-[fade-up_0.8s_var(--ease-smooth)_1.2s_both]">
         <span className="text-[0.6rem] tracking-[0.2em] uppercase text-text-muted [writing-mode:vertical-rl]">
           Kaydır
         </span>
