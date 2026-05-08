@@ -48,56 +48,71 @@ export function Navbar() {
     return !searchParams.get("type");
   }
 
+  const isHomepage = pathname === "/";
+
   return (
     <>
+      {/* Spacer to push content below navbar on mobile (homepage only — other pages have their own pt) */}
+      {isHomepage && <div className="h-[calc(3.5rem+env(safe-area-inset-top))] md:h-0" />}
+
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between transition-all duration-600 pt-[env(safe-area-inset-top)]",
+          "fixed top-0 left-0 right-0 z-[1000] transition-all duration-600",
           scrolled || menuOpen
-            ? "py-3 px-6 md:px-8 bg-bg-primary/95 backdrop-blur-[20px] border-b border-accent/8"
-            : "py-4 px-6 md:py-6 md:px-8 bg-bg-primary/90 md:bg-transparent backdrop-blur-[12px] md:backdrop-blur-none",
+            ? "bg-bg-primary/95 backdrop-blur-[20px] border-b border-accent/8"
+            : isHomepage
+              ? "bg-bg-primary md:bg-transparent md:backdrop-blur-none backdrop-blur-[12px]"
+              : "bg-bg-primary backdrop-blur-[12px]",
         )}
-        style={{ transitionTimingFunction: "var(--ease-smooth)" }}
+        style={{
+          transitionTimingFunction: "var(--ease-smooth)",
+          paddingTop: "env(safe-area-inset-top, 0px)",
+        }}
       >
-        <Link href="/" className="font-display text-[1.5rem] md:text-[1.8rem] font-light tracking-[0.35em] uppercase text-text-primary">
-          ATTIL<span className="text-accent">A</span>
-        </Link>
+        <div className={cn(
+          "flex items-center justify-between transition-all duration-600",
+          scrolled ? "py-3 px-6 md:px-8" : "py-3 px-6 md:py-6 md:px-8",
+        )}>
+          <Link href="/" className="font-display text-[1.5rem] md:text-[1.8rem] font-light tracking-[0.35em] uppercase text-text-primary">
+            ATTIL<span className="text-accent">A</span>
+          </Link>
 
-        {/* Desktop nav */}
-        <ul className="hidden md:flex gap-10 list-none">
-          {NAV_LINKS.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className={cn(
-                  "relative text-[0.75rem] tracking-[0.15em] uppercase font-normal transition-colors duration-300",
-                  "after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-accent after:transition-[width] after:duration-400",
-                  isActive(link.href)
-                    ? "text-accent after:w-full"
-                    : "text-text-secondary hover:text-accent hover:after:w-full",
-                )}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+          {/* Desktop nav */}
+          <ul className="hidden md:flex gap-10 list-none">
+            {NAV_LINKS.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className={cn(
+                    "relative text-[0.75rem] tracking-[0.15em] uppercase font-normal transition-colors duration-300",
+                    "after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-accent after:transition-[width] after:duration-400",
+                    isActive(link.href)
+                      ? "text-accent after:w-full"
+                      : "text-text-secondary hover:text-accent hover:after:w-full",
+                  )}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="flex md:hidden flex-col justify-center items-center w-10 h-10 gap-1.5 cursor-pointer bg-transparent border-none"
-          aria-label="Menü"
-        >
-          <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "translate-y-[3.5px] rotate-45")} />
-          <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "opacity-0")} />
-          <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "-translate-y-[3.5px] -rotate-45")} />
-        </button>
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="flex md:hidden flex-col justify-center items-center w-10 h-10 gap-1.5 cursor-pointer bg-transparent border-none"
+            aria-label="Menü"
+          >
+            <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "translate-y-[3.5px] rotate-45")} />
+            <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "opacity-0")} />
+            <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "-translate-y-[3.5px] -rotate-45")} />
+          </button>
+        </div>
       </nav>
 
       {/* Mobile menu overlay */}
       {menuOpen && (
-        <div className="fixed inset-0 z-[999] bg-bg-primary/98 backdrop-blur-[30px] flex flex-col items-center justify-center gap-8 pt-[env(safe-area-inset-top)] md:hidden">
+        <div className="fixed inset-0 z-[999] bg-bg-primary/98 backdrop-blur-[30px] flex flex-col items-center justify-center gap-8 md:hidden">
           {NAV_LINKS.map((link, i) => (
             <Link
               key={link.href}
