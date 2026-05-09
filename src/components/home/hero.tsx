@@ -7,8 +7,8 @@ export function Hero() {
     <section className="h-[50vh] md:h-screen relative flex items-end px-6 md:px-8 pb-16 md:pb-24 overflow-hidden">
       <div className="absolute inset-0 z-0">
         <Image
-          src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1800&q=80"
-          alt="Istanbul Bosphorus"
+          src="/images/hero-bg.jpg"
+          alt="Bodrum kıyıları"
           fill
           priority
           className="object-cover brightness-[0.35] saturate-[0.8] scale-105 animate-[hero-zoom_20s_ease-in-out_infinite_alternate]"

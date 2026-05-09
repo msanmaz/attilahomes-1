@@ -73,9 +73,9 @@ export function ListingsView({ properties, total }: Props) {
 
       {/* Map Mode */}
       {viewMode === "map" && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 h-[calc(100vh-200px)] lg:h-[calc(100vh-200px)]">
-          {/* List panel */}
-          <div className="overflow-y-auto p-4 order-2 lg:order-1 max-h-[50vh] lg:max-h-none">
+        <div className="grid grid-cols-1 lg:grid-cols-2 h-[calc(100dvh-200px)]">
+          {/* List panel — hidden on mobile */}
+          <div className="hidden lg:block overflow-y-auto p-4 order-1">
             <div className="flex flex-col gap-3">
               {properties.map((p) => (
                 <div
@@ -94,8 +94,8 @@ export function ListingsView({ properties, total }: Props) {
               ))}
             </div>
           </div>
-          {/* Map panel */}
-          <div className="border-l border-border order-1 lg:order-2 h-[50vh] lg:h-full">
+          {/* Map panel — full width on mobile */}
+          <div className="lg:border-l border-border order-1 lg:order-2 h-[calc(100dvh-280px)] lg:h-full">
             <ListingsMap
               properties={properties}
               hoveredId={hoveredId}

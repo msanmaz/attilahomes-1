@@ -35,6 +35,7 @@
 /* ─── BASE ─── */
 html {
   scroll-behavior: smooth;
+  background: #0f0f0f;
 }
 
 body {
