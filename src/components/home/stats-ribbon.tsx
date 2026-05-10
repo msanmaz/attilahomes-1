@@ -1,13 +1,11 @@
 const STATS = [
-  { value: "120+", label: "Listelenen Mülk" },
-  { value: "35", label: "Tamamlanan Renovasyon" },
   { value: "8", label: "Yıllık Deneyim" },
   { value: "97%", label: "Müşteri Memnuniyeti" },
 ];
 
 export function StatsRibbon() {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 border-t border-b border-border">
+    <div className="grid grid-cols-2 border-t border-b border-border">
       {STATS.map((stat) => (
         <div
           key={stat.label}

@@ -59,10 +59,10 @@ export function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-[1000] transition-all duration-600",
           scrolled || menuOpen
-            ? "bg-bg-primary/95 backdrop-blur-[20px] border-b border-accent/8"
+            ? "bg-[#0f0f0f] md:bg-bg-primary/95 md:backdrop-blur-[20px] border-b border-accent/8"
             : isHomepage
-              ? "bg-bg-primary md:bg-transparent md:backdrop-blur-none backdrop-blur-[12px]"
-              : "bg-bg-primary backdrop-blur-[12px]",
+              ? "bg-[#0f0f0f] md:bg-transparent md:backdrop-blur-none"
+              : "bg-[#0f0f0f]",
         )}
         style={{
           transitionTimingFunction: "var(--ease-smooth)",
