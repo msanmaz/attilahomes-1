@@ -63,7 +63,7 @@ export function Navbar() {
           scrolled || menuOpen
             ? "bg-[#0f0f0f] md:bg-bg-primary/95 md:backdrop-blur-[20px] border-b border-accent/8"
             : isHomepage
-              ? "bg-[#0f0f0f] md:bg-transparent md:backdrop-blur-none"
+              ? "bg-[#0f0f0f] md:bg-transparent md:backdrop-blur-none attila-nav--transparent"
               : "bg-[#0f0f0f]",
         )}
       >

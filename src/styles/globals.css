@@ -57,6 +57,23 @@ body {
   box-sizing: border-box;
 }
 
+.attila-nav::before {
+  content: "";
+  position: absolute;
+  top: calc(-1 * env(safe-area-inset-top, 0px));
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background: #0f0f0f;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .attila-nav--transparent::before {
+    background: transparent;
+  }
+}
+
 .attila-nav-spacer {
   height: calc(3.5rem + constant(safe-area-inset-top));
   height: calc(3.5rem + env(safe-area-inset-top, 0px));
