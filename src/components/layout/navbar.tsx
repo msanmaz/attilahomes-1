@@ -53,17 +53,16 @@ export function Navbar() {
   return (
     <>
       {/* Spacer to push content below navbar on mobile (homepage only — other pages have their own pt) */}
-      {isHomepage && <div className="h-[calc(3.5rem+env(safe-area-inset-top))] md:h-0" />}
-
-      {/* Safe area background — always covers the notch/Dynamic Island area */}
-      <div
-        className="fixed top-0 left-0 right-0 z-[999] bg-[#0f0f0f] md:bg-transparent"
-        style={{ height: "env(safe-area-inset-top, 0px)" }}
-      />
+      {isHomepage && (
+        <div
+          className="md:h-0"
+          style={{ height: "calc(3.5rem + env(safe-area-inset-top, 0px))" }}
+        />
+      )}
 
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-[1000] transition-all duration-600",
+          "fixed top-0 left-0 right-0 z-[1000]",
           scrolled || menuOpen
             ? "bg-[#0f0f0f] md:bg-bg-primary/95 md:backdrop-blur-[20px] border-b border-accent/8"
             : isHomepage
@@ -71,13 +70,13 @@ export function Navbar() {
               : "bg-[#0f0f0f]",
         )}
         style={{
-          transitionTimingFunction: "var(--ease-smooth)",
           paddingTop: "env(safe-area-inset-top, 0px)",
+          height: "calc(3.5rem + env(safe-area-inset-top, 0px))",
         }}
       >
         <div className={cn(
-          "flex items-center justify-between transition-all duration-600",
-          scrolled ? "py-3 px-6 md:px-8" : "py-3 px-6 md:py-6 md:px-8",
+          "flex items-center justify-between h-full",
+          "px-6 md:px-8",
         )}>
           <Link href="/" className="font-display text-[1.5rem] md:text-[1.8rem] font-light tracking-[0.35em] uppercase text-text-primary">
             ATTIL<span className="text-accent">A</span>
