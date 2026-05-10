@@ -48,6 +48,20 @@ body {
   padding: 0 !important;
 }
 
+/* ─── SAFE AREA NAV ─── */
+.attila-nav {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top, 0px);
+  min-height: calc(3.5rem + constant(safe-area-inset-top));
+  min-height: calc(3.5rem + env(safe-area-inset-top, 0px));
+  box-sizing: border-box;
+}
+
+.attila-nav-spacer {
+  height: calc(3.5rem + constant(safe-area-inset-top));
+  height: calc(3.5rem + env(safe-area-inset-top, 0px));
+}
+
 /* ─── NOISE TEXTURE OVERLAY ─── */
 body::before {
   content: "";

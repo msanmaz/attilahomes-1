@@ -54,26 +54,18 @@ export function Navbar() {
     <>
       {/* Spacer to push content below navbar on mobile (homepage only — other pages have their own pt) */}
       {isHomepage && (
-        <div
-          className="md:h-0"
-          style={{ height: "calc(3.5rem + env(safe-area-inset-top, 0px))" }}
-        />
+        <div className="attila-nav-spacer md:h-0" />
       )}
 
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-[1000]",
+          "attila-nav fixed top-0 left-0 right-0 z-[1000]",
           scrolled || menuOpen
             ? "bg-[#0f0f0f] md:bg-bg-primary/95 md:backdrop-blur-[20px] border-b border-accent/8"
             : isHomepage
               ? "bg-[#0f0f0f] md:bg-transparent md:backdrop-blur-none"
               : "bg-[#0f0f0f]",
         )}
-        style={{
-          paddingTop: "env(safe-area-inset-top, 0px)",
-          height: "calc(3.5rem + env(safe-area-inset-top, 0px))",
-          boxSizing: "border-box",
-        }}
       >
         <div className={cn(
           "flex items-center justify-between h-full",

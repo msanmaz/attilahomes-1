@@ -36,11 +36,6 @@ export function Hero() {
               Mülkleri Keşfet
             </Button>
           </Link>
-          <Link href="/properties?type=rent">
-            <Button variant="outline" size="lg">
-              Kiralık Koleksiyon
-            </Button>
-          </Link>
         </div>
       </div>
 
