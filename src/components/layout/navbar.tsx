@@ -55,6 +55,12 @@ export function Navbar() {
       {/* Spacer to push content below navbar on mobile (homepage only — other pages have their own pt) */}
       {isHomepage && <div className="h-[calc(3.5rem+env(safe-area-inset-top))] md:h-0" />}
 
+      {/* Safe area background — always covers the notch/Dynamic Island area */}
+      <div
+        className="fixed top-0 left-0 right-0 z-[999] bg-[#0f0f0f] md:bg-transparent"
+        style={{ height: "env(safe-area-inset-top, 0px)" }}
+      />
+
       <nav
         className={cn(
           "fixed top-0 left-0 right-0 z-[1000] transition-all duration-600",
