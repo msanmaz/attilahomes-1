@@ -50,32 +50,21 @@ body {
 
 /* ─── SAFE AREA NAV ─── */
 .attila-nav {
-  padding-top: constant(safe-area-inset-top);
-  padding-top: env(safe-area-inset-top, 0px);
-  min-height: calc(3.5rem + constant(safe-area-inset-top));
-  min-height: calc(3.5rem + env(safe-area-inset-top, 0px));
+  top: calc(-1 * env(safe-area-inset-top, 0px));
+  padding-top: calc(env(safe-area-inset-top, 0px) * 2);
+  min-height: calc(3.5rem + env(safe-area-inset-top, 0px) * 2);
   box-sizing: border-box;
 }
 
-.attila-nav::before {
-  content: "";
-  position: absolute;
-  top: calc(-1 * env(safe-area-inset-top, 0px));
-  left: 0;
-  right: 0;
-  height: env(safe-area-inset-top, 0px);
-  background: #0f0f0f;
-  z-index: 1;
-}
-
 @media (min-width: 768px) {
-  .attila-nav--transparent::before {
-    background: transparent;
+  .attila-nav {
+    top: 0;
+    padding-top: env(safe-area-inset-top, 0px);
+    min-height: calc(3.5rem + env(safe-area-inset-top, 0px));
   }
 }
 
 .attila-nav-spacer {
-  height: calc(3.5rem + constant(safe-area-inset-top));
   height: calc(3.5rem + env(safe-area-inset-top, 0px));
 }
 

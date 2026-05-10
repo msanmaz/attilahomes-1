@@ -59,11 +59,11 @@ export function Navbar() {
 
       <nav
         className={cn(
-          "attila-nav fixed top-0 left-0 right-0 z-[1000]",
+          "attila-nav fixed left-0 right-0 z-[1000]",
           scrolled || menuOpen
             ? "bg-[#0f0f0f] md:bg-bg-primary/95 md:backdrop-blur-[20px] border-b border-accent/8"
             : isHomepage
-              ? "bg-[#0f0f0f] md:bg-transparent md:backdrop-blur-none attila-nav--transparent"
+              ? "bg-[#0f0f0f] md:bg-transparent md:backdrop-blur-none"
               : "bg-[#0f0f0f]",
         )}
       >
