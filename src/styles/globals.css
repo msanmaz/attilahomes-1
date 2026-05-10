@@ -50,18 +50,10 @@ body {
 
 /* ─── SAFE AREA NAV ─── */
 .attila-nav {
-  top: calc(-1 * env(safe-area-inset-top, 0px));
-  padding-top: calc(env(safe-area-inset-top, 0px) * 2);
-  min-height: calc(3.5rem + env(safe-area-inset-top, 0px) * 2);
+  top: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  min-height: calc(3.5rem + env(safe-area-inset-top, 0px));
   box-sizing: border-box;
-}
-
-@media (min-width: 768px) {
-  .attila-nav {
-    top: 0;
-    padding-top: env(safe-area-inset-top, 0px);
-    min-height: calc(3.5rem + env(safe-area-inset-top, 0px));
-  }
 }
 
 .attila-nav-spacer {
