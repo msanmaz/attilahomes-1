@@ -72,6 +72,7 @@ export function Navbar() {
         style={{
           paddingTop: "env(safe-area-inset-top, 0px)",
           height: "calc(3.5rem + env(safe-area-inset-top, 0px))",
+          boxSizing: "border-box",
         }}
       >
         <div className={cn(
