@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import type { PropertyImage } from "@/lib/types";
 
@@ -11,6 +11,7 @@ type Props = {
 
 export function PropertyGallery({ images, name }: Props) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const thumbStripRef = useRef<HTMLDivElement>(null);
 
   const open = (index: number) => setLightboxIndex(index);
   const close = () => setLightboxIndex(null);
@@ -40,11 +41,29 @@ export function PropertyGallery({ images, name }: Props) {
     };
   }, [lightboxIndex, prev, next]);
 
+  useEffect(() => {
+    if (lightboxIndex === null || !thumbStripRef.current) return;
+    const activeThumb = thumbStripRef.current.children[lightboxIndex] as HTMLElement;
+    if (activeThumb) {
+      activeThumb.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  }, [lightboxIndex]);
+
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+    const toPreload = [lightboxIndex - 1, lightboxIndex + 1]
+      .map(i => (i + images.length) % images.length)
+      .filter(i => i !== lightboxIndex);
+    toPreload.forEach(i => {
+      const img = new window.Image();
+      img.src = images[i].url;
+    });
+  }, [lightboxIndex, images]);
+
   if (images.length === 0) return null;
 
   return (
     <>
-      {/* Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_0.6fr] gap-2 px-4 md:px-8 h-auto lg:h-[520px]">
         <div
           className="relative overflow-hidden group cursor-pointer h-[250px] md:h-[350px] lg:h-full"
@@ -81,9 +100,7 @@ export function PropertyGallery({ images, name }: Props) {
                 style={{ transitionTimingFunction: "var(--ease-smooth)" }}
               />
               {i === 1 && (
-                <div
-                  className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-end justify-end p-4"
-                >
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-end justify-end p-4">
                   <div className="px-3 py-1.5 bg-bg-primary/70 backdrop-blur-[10px] text-[0.68rem] tracking-[0.1em]">
                     {images.length} Fotoğraf
                   </div>
@@ -94,19 +111,16 @@ export function PropertyGallery({ images, name }: Props) {
         </div>
       </div>
 
-      {/* Lightbox */}
       {lightboxIndex !== null && (
         <div
           className="fixed inset-0 z-[10000] flex items-center justify-center"
           style={{ animation: "lightbox-in 0.3s var(--ease-smooth)" }}
         >
-          {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-bg-primary/95 backdrop-blur-[30px]"
+            className="absolute inset-0 bg-bg-primary/95"
             onClick={close}
           />
 
-          {/* Top bar */}
           <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-8 py-5 z-10">
             <div className="text-[0.72rem] tracking-[0.15em] uppercase text-text-muted">
               <span className="text-text-primary font-medium">{lightboxIndex + 1}</span>
@@ -123,24 +137,15 @@ export function PropertyGallery({ images, name }: Props) {
             </button>
           </div>
 
-          {/* Image */}
-          <div className="relative w-full h-full flex items-center justify-center px-4 py-16 md:px-20 md:py-20 z-[1]">
-            <div
-              className="relative max-w-[90vw] max-h-[80vh] w-full h-full"
-              style={{ animation: "lightbox-img 0.35s var(--ease-smooth)" }}
-            >
-              <Image
-                src={images[lightboxIndex].url}
-                alt={`${name} ${lightboxIndex + 1}`}
-                fill
-                sizes="90vw"
-                className="object-contain"
-                priority
-              />
-            </div>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            key={lightboxIndex}
+            src={images[lightboxIndex].url}
+            alt={`${name} ${lightboxIndex + 1}`}
+            className="relative max-w-[90vw] max-h-[80vh] object-contain z-[1]"
+            style={{ animation: "lightbox-img 0.2s var(--ease-smooth)" }}
+          />
 
-          {/* Prev */}
           <button
             onClick={prev}
             className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center border border-border hover:border-accent hover:bg-accent-muted transition-all cursor-pointer bg-bg-primary/50 backdrop-blur-sm z-10"
@@ -150,7 +155,6 @@ export function PropertyGallery({ images, name }: Props) {
             </svg>
           </button>
 
-          {/* Next */}
           <button
             onClick={next}
             className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center border border-border hover:border-accent hover:bg-accent-muted transition-all cursor-pointer bg-bg-primary/50 backdrop-blur-sm z-10"
@@ -160,25 +164,28 @@ export function PropertyGallery({ images, name }: Props) {
             </svg>
           </button>
 
-          {/* Thumbnail strip */}
           {images.length > 1 && (
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            <div
+              ref={thumbStripRef}
+              className="absolute bottom-6 left-8 right-8 flex gap-2 z-10 overflow-x-auto scrollbar-hide"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
               {images.map((img, i) => (
                 <button
                   key={img.id}
                   onClick={() => setLightboxIndex(i)}
-                  className={`relative w-16 h-11 overflow-hidden border-2 transition-all duration-300 cursor-pointer ${
+                  className={`relative w-16 h-11 overflow-hidden border-2 transition-all duration-300 cursor-pointer shrink-0 ${
                     i === lightboxIndex
                       ? "border-accent opacity-100"
                       : "border-transparent opacity-50 hover:opacity-80"
                   }`}
                 >
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={img.url}
                     alt={`Thumbnail ${i + 1}`}
-                    fill
-                    sizes="64px"
-                    className="object-cover"
+                    className="absolute inset-0 w-full h-full object-cover"
+                    loading="lazy"
                   />
                 </button>
               ))}
@@ -191,7 +198,7 @@ export function PropertyGallery({ images, name }: Props) {
               to { opacity: 1; }
             }
             @keyframes lightbox-img {
-              from { opacity: 0; transform: scale(0.95); }
+              from { opacity: 0; transform: scale(0.97); }
               to { opacity: 1; transform: scale(1); }
             }
           `}</style>
