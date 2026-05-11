@@ -3,15 +3,19 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { PropertyInsert, PropertyUpdate } from "@/lib/types";
+import { slugify } from "@/lib/utils";
 
 export async function createProperty(data: PropertyInsert) {
   const supabase = await createClient();
+
+  const baseSlug = slugify(data.name);
+  const slug = baseSlug + "-" + crypto.randomUUID().slice(0, 8);
 
   const { data: property, error } = await supabase
     .from("properties")
     .insert({
       name: data.name,
-      slug: "",
+      slug,
       city: data.city,
       neighborhood: data.neighborhood,
       full_address: data.fullAddress,
@@ -48,7 +52,10 @@ export async function updateProperty(id: string, data: PropertyUpdate) {
   const supabase = await createClient();
 
   const updateData: Record<string, unknown> = {};
-  if (data.name !== undefined) updateData.name = data.name;
+  if (data.name !== undefined) {
+    updateData.name = data.name;
+    updateData.slug = slugify(data.name) + "-" + crypto.randomUUID().slice(0, 8);
+  }
   if (data.city !== undefined) updateData.city = data.city;
   if (data.neighborhood !== undefined) updateData.neighborhood = data.neighborhood;
   if (data.fullAddress !== undefined) updateData.full_address = data.fullAddress;
