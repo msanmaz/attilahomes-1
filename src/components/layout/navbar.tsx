@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -71,8 +72,8 @@ export function Navbar() {
           "flex items-center justify-between h-full",
           "px-6 md:px-8",
         )}>
-          <Link href="/" className="font-display text-[1.5rem] md:text-[1.8rem] font-light tracking-[0.35em] uppercase text-text-primary">
-            ATTIL<span className="text-accent">A</span>
+          <Link href="/" className="relative h-8 md:h-10 w-[140px] md:w-[180px] block">
+            <Image src="/logo.jpg" alt="Attila Homes" fill className="object-contain" priority />
           </Link>
 
           {/* Desktop nav */}
