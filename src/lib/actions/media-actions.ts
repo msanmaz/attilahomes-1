@@ -3,43 +3,30 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
-export async function uploadPropertyImage(formData: FormData) {
+export async function savePropertyImageRecord(data: {
+  propertyId: string;
+  url: string;
+  storagePath: string;
+  isCover: boolean;
+  fileSize: number;
+}) {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated.");
 
-  const propertyId = formData.get("propertyId") as string;
-  const file = formData.get("file") as File;
-  const isCover = formData.get("isCover") === "true";
-
-  if (!propertyId || !file) throw new Error("Missing propertyId or file.");
-
-  const ext = file.name.split(".").pop();
-  const path = `${propertyId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`;
-
-  const { error: uploadError } = await supabase.storage
-    .from("property-images")
-    .upload(path, file);
-
-  if (uploadError) throw uploadError;
-
-  const {
-    data: { publicUrl },
-  } = supabase.storage.from("property-images").getPublicUrl(path);
-
   const { error: dbError } = await supabase.from("property_images").insert({
-    property_id: propertyId,
-    url: publicUrl,
-    storage_path: path,
-    is_cover: isCover,
-    file_size: file.size,
+    property_id: data.propertyId,
+    url: data.url,
+    storage_path: data.storagePath,
+    is_cover: data.isCover,
+    file_size: data.fileSize,
   });
 
   if (dbError) throw dbError;
 
   revalidatePath(`/properties`);
-  return { url: publicUrl, path };
+  return { url: data.url, path: data.storagePath };
 }
 
 export async function deletePropertyImage(imageId: string, storagePath: string) {

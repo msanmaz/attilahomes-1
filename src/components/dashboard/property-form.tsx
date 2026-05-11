@@ -11,7 +11,8 @@ import { FeatureTags } from "@/components/dashboard/feature-tags";
 import { ImageUploader, type ManagedImage, type ExistingImage } from "@/components/dashboard/image-uploader";
 import { NEIGHBORHOODS } from "@/lib/constants";
 import { createProperty, updateProperty } from "@/lib/actions/property-actions";
-import { uploadPropertyImage, deletePropertyImage, setCoverImage } from "@/lib/actions/media-actions";
+import { savePropertyImageRecord, deletePropertyImage, setCoverImage } from "@/lib/actions/media-actions";
+import { createClient as createBrowserClient } from "@/lib/supabase/client";
 import type { City, PropertyWithImages, PropertyType, PropertyStatus } from "@/lib/types";
 
 const LocationPicker = dynamic(() => import("./location-picker"), {
@@ -119,13 +120,29 @@ export function PropertyForm({ property }: Props) {
         }
       }
 
+      const supabase = createBrowserClient();
       for (const img of images) {
         if (img.kind === "new") {
-          const fd = new FormData();
-          fd.append("propertyId", propertyId);
-          fd.append("file", img.file);
-          fd.append("isCover", String(img.isCover));
-          await uploadPropertyImage(fd);
+          const ext = img.file.name.split(".").pop();
+          const path = `${propertyId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from("property-images")
+            .upload(path, img.file);
+
+          if (uploadError) throw uploadError;
+
+          const { data: { publicUrl } } = supabase.storage
+            .from("property-images")
+            .getPublicUrl(path);
+
+          await savePropertyImageRecord({
+            propertyId,
+            url: publicUrl,
+            storagePath: path,
+            isCover: img.isCover,
+            fileSize: img.file.size,
+          });
         }
       }
 
