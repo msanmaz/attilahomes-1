@@ -9,6 +9,7 @@ export const NEIGHBORHOODS: Record<City, string[]> = {
     "Galata",
     "Bebek",
     "Üsküdar",
+    "Bakırköy",
   ],
   Bodrum: ["Yalıkavak", "Göltürkbükü", "Türkbükü", "Bodrum Center"],
 };
@@ -24,6 +25,7 @@ export const NEIGHBORHOOD_COORDS: Record<
   Galata: { lat: 41.0256, lng: 28.9743 },
   Bebek: { lat: 41.0766, lng: 29.0434 },
   Üsküdar: { lat: 41.0232, lng: 29.0151 },
+  Bakırköy: { lat: 40.9812, lng: 28.8772 },
   Yalıkavak: { lat: 37.1036, lng: 27.2926 },
   Göltürkbükü: { lat: 37.0936, lng: 27.3826 },
   Türkbükü: { lat: 37.0956, lng: 27.3746 },
