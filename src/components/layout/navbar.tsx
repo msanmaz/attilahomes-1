@@ -73,7 +73,7 @@ export function Navbar() {
           "px-6 md:px-8",
         )}>
           <Link href="/" className="relative h-8 md:h-10 w-[140px] md:w-[180px] block">
-            <Image src="/logo.jpg" alt="Attila Homes" fill className="object-contain" priority />
+            <Image src="/logo-transparent.png" alt="Attila Homes" fill className="object-contain" priority />
           </Link>
 
           {/* Desktop nav */}
