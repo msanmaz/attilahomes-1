@@ -52,12 +52,12 @@ body {
 .attila-nav {
   top: 0;
   padding-top: env(safe-area-inset-top, 0px);
-  min-height: calc(3.5rem + env(safe-area-inset-top, 0px));
+  min-height: calc(4.5rem + env(safe-area-inset-top, 0px));
   box-sizing: border-box;
 }
 
 .attila-nav-spacer {
-  height: calc(3.5rem + env(safe-area-inset-top, 0px));
+  height: calc(4.5rem + env(safe-area-inset-top, 0px));
 }
 
 /* ─── NOISE TEXTURE OVERLAY ─── */

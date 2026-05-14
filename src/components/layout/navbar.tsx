@@ -89,7 +89,7 @@ export function Navbar() {
           {/* ── CENTER: logo ── */}
           <Link
             href="/"
-            className="relative h-8 md:h-10 w-[140px] md:w-[160px] block md:justify-self-center"
+            className="relative h-10 md:h-14 w-[160px] md:w-[240px] block md:justify-self-center"
           >
             <Image
               src="/logo-transparent.png"
