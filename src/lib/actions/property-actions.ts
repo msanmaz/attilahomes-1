@@ -27,6 +27,8 @@ export async function createProperty(data: PropertyInsert) {
       bedrooms: data.bedrooms,
       bathrooms: data.bathrooms,
       sqft: data.sqft,
+      net_sqm: data.netSqm ?? null,
+      brut_sqm: data.brutSqm ?? null,
       lat: data.lat,
       lng: data.lng,
       description: data.description,
@@ -67,6 +69,8 @@ export async function updateProperty(id: string, data: PropertyUpdate) {
   if (data.bedrooms !== undefined) updateData.bedrooms = data.bedrooms;
   if (data.bathrooms !== undefined) updateData.bathrooms = data.bathrooms;
   if (data.sqft !== undefined) updateData.sqft = data.sqft;
+  if (data.netSqm !== undefined) updateData.net_sqm = data.netSqm;
+  if (data.brutSqm !== undefined) updateData.brut_sqm = data.brutSqm;
   if (data.lat !== undefined) updateData.lat = data.lat;
   if (data.lng !== undefined) updateData.lng = data.lng;
   if (data.description !== undefined) updateData.description = data.description;

@@ -36,6 +36,8 @@ export function PropertyForm({ property }: Props) {
   const [bedrooms, setBedrooms] = useState(String(property?.bedrooms ?? 3));
   const [bathrooms, setBathrooms] = useState(String(property?.bathrooms ?? 2));
   const [sqft, setSqft] = useState(property?.sqft ? String(property.sqft) : "");
+  const [netSqm, setNetSqm] = useState(property?.netSqm ? String(property.netSqm) : "");
+  const [brutSqm, setBrutSqm] = useState(property?.brutSqm ? String(property.brutSqm) : "");
   const [yearInfo, setYearInfo] = useState("");
   const [description, setDescription] = useState(property?.description ?? "");
   const [features, setFeatures] = useState<string[]>(property?.features ?? []);
@@ -84,6 +86,8 @@ export function PropertyForm({ property }: Props) {
         bedrooms: parseInt(bedrooms),
         bathrooms: parseInt(bathrooms),
         sqft: parseInt(sqft),
+        netSqm: netSqm ? parseInt(netSqm) : null,
+        brutSqm: brutSqm ? parseInt(brutSqm) : null,
         yearBuilt: null,
         yearRenovated: null,
         lat: lat ? parseFloat(lat) : null,
@@ -258,6 +262,16 @@ export function PropertyForm({ property }: Props) {
               <div className="flex flex-col gap-1.5">
                 <Label>Year Built / Renovated</Label>
                 <Input placeholder="e.g. 1930 / 2024" value={yearInfo} onChange={(e) => setYearInfo(e.target.value)} />
+              </div>
+            </FormRow>
+            <FormRow>
+              <div className="flex flex-col gap-1.5">
+                <Label>Net m²</Label>
+                <Input type="number" placeholder="e.g. 120" value={netSqm} onChange={(e) => setNetSqm(e.target.value)} />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label>Brüt m²</Label>
+                <Input type="number" placeholder="e.g. 150" value={brutSqm} onChange={(e) => setBrutSqm(e.target.value)} />
               </div>
             </FormRow>
             <FormRow>

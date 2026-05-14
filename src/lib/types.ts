@@ -27,6 +27,8 @@ export type Property = {
   bedrooms: number;
   bathrooms: number;
   sqft: number;
+  netSqm: number | null;
+  brutSqm: number | null;
   yearBuilt: number | null;
   yearRenovated: number | null;
   lat: number | null;
