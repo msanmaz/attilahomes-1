@@ -65,7 +65,7 @@ export function ContactForm() {
             </div>
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label>Telefon (isteğe bağlı)</Label>
+            <Label>Telefon</Label>
             <Input type="tel" placeholder="+90" value={phone} onChange={(e) => setPhone(e.target.value)} />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -82,6 +82,9 @@ export function ContactForm() {
           <Button variant="primary" className="w-full justify-center" disabled={status === "sending"}>
             {status === "sending" ? "Gönderiliyor…" : "Mesaj Gönder"}
           </Button>
+          <p className="text-[0.72rem] text-text-muted text-center">
+            Mesajınızı en geç 24 saat içerisinde cevaplandıracağız.
+          </p>
         </form>
       )}
     </div>
