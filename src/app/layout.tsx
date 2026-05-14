@@ -31,15 +31,15 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "ATTILA HOMES",
-    template: "%s — ATTILA Emlak",
+    default: "Attila Homes",
+    template: "%s — Attila Homes",
   },
   description:
     "İstanbul'un en gözde semtleri ve Bodrum kıyılarından özenle seçilmiş mülkler. Attila Utkucan küratörlüğünde.",
   openGraph: {
     type: "website",
     locale: "tr_TR",
-    siteName: "ATTILA Emlak",
+    siteName: "Attila Homes",
   },
   other: {
     "apple-mobile-web-app-capable": "yes",
