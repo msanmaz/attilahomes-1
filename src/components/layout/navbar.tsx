@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { label: "Ana Sayfa", href: "/" },
-  { label: "İlanlar", href: "/properties" },
   { label: "Satılık", href: "/properties?type=sale" },
   { label: "Kiralık", href: "/properties?type=rent" },
   { label: "Hakkımızda", href: "/about" },
@@ -54,10 +53,7 @@ export function Navbar() {
 
   return (
     <>
-      {/* Spacer to push content below navbar on mobile (homepage only — other pages have their own pt) */}
-      {isHomepage && (
-        <div className="attila-nav-spacer md:h-0" />
-      )}
+      {isHomepage && <div className="attila-nav-spacer md:h-0" />}
 
       <nav
         className={cn(
@@ -70,29 +66,48 @@ export function Navbar() {
         )}
       >
         <div className={cn(
-          "flex items-center justify-between h-full",
-          "px-6 md:px-8",
+          "h-full px-6 md:px-8",
+          /* Mobile: flex, logo left + hamburger right */
+          "flex items-center justify-between",
+          /* Desktop: 3-column grid so logo is always centred */
+          "md:grid md:grid-cols-[1fr_auto_1fr]",
         )}>
-          <Link href="/" className="relative h-8 md:h-10 w-[140px] md:w-[180px] block">
-            <Image src="/logo-transparent.png" alt="Attila Homes" fill className="object-contain" priority />
-          </Link>
 
-          {/* Phone number */}
+          {/* ── LEFT: phone number ── */}
           <a
             href="tel:+905313443090"
-            className="hidden md:block text-[0.72rem] tracking-[0.08em] text-text-secondary transition-colors duration-300 hover:text-accent"
+            className="hidden md:flex flex-col gap-0.5 group"
           >
-            +90 531 344 30 90
+            <span className="text-[0.5rem] tracking-[0.3em] uppercase text-accent/80 font-medium transition-colors duration-300 group-hover:text-accent">
+              Bize Ulaşın
+            </span>
+            <span className="text-[0.78rem] tracking-[0.06em] text-text-secondary font-light transition-colors duration-300 group-hover:text-text-primary">
+              +90 531 344 30 90
+            </span>
           </a>
 
-          {/* Desktop nav */}
-          <ul className="hidden md:flex gap-10 list-none">
+          {/* ── CENTER: logo ── */}
+          <Link
+            href="/"
+            className="relative h-8 md:h-10 w-[140px] md:w-[160px] block md:justify-self-center"
+          >
+            <Image
+              src="/logo-transparent.png"
+              alt="Attila Homes"
+              fill
+              className="object-contain"
+              priority
+            />
+          </Link>
+
+          {/* ── RIGHT: nav links ── */}
+          <ul className="hidden md:flex items-center justify-end gap-8 list-none">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
                   className={cn(
-                    "relative text-[0.75rem] tracking-[0.15em] uppercase font-normal transition-colors duration-300",
+                    "relative text-[0.68rem] tracking-[0.15em] uppercase font-normal transition-colors duration-300",
                     "after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-accent after:transition-[width] after:duration-400",
                     isActive(link.href)
                       ? "text-accent after:w-full"
@@ -105,7 +120,7 @@ export function Navbar() {
             ))}
           </ul>
 
-          {/* Mobile hamburger */}
+          {/* ── MOBILE: hamburger ── */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="flex md:hidden flex-col justify-center items-center w-10 h-10 gap-1.5 cursor-pointer bg-transparent border-none"
@@ -118,7 +133,7 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile menu overlay */}
+      {/* ── MOBILE MENU ── */}
       {menuOpen && (
         <div className="fixed inset-0 z-[999] bg-bg-primary/98 backdrop-blur-[30px] flex flex-col items-center justify-center gap-8 md:hidden">
           {NAV_LINKS.map((link, i) => (
@@ -135,6 +150,13 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          <a
+            href="tel:+905313443090"
+            className="mt-4 text-[0.72rem] tracking-[0.15em] text-text-muted"
+            style={{ animation: `fade-up 0.4s var(--ease-smooth) ${NAV_LINKS.length * 0.08}s both` }}
+          >
+            +90 531 344 30 90
+          </a>
         </div>
       )}
     </>
