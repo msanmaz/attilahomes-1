@@ -26,6 +26,8 @@ function transform(row: any): PropertyWithImages {
     bedrooms: row.bedrooms,
     bathrooms: row.bathrooms,
     sqft: row.sqft,
+    netSqm: row.net_sqm ?? null,
+    brutSqm: row.brut_sqm ?? null,
     yearBuilt: row.year_built,
     yearRenovated: row.year_renovated,
     lat: row.lat,
