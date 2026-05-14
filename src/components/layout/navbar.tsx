@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "İlanlar", href: "/properties" },
   { label: "Satılık", href: "/properties?type=sale" },
   { label: "Kiralık", href: "/properties?type=rent" },
+  { label: "Hakkımızda", href: "/about" },
   { label: "İletişim", href: "/contact" },
 ];
 
@@ -75,6 +76,14 @@ export function Navbar() {
           <Link href="/" className="relative h-8 md:h-10 w-[140px] md:w-[180px] block">
             <Image src="/logo-transparent.png" alt="Attila Homes" fill className="object-contain" priority />
           </Link>
+
+          {/* Phone number */}
+          <a
+            href="tel:+905313443090"
+            className="hidden md:block text-[0.72rem] tracking-[0.08em] text-text-secondary transition-colors duration-300 hover:text-accent"
+          >
+            +90 531 344 30 90
+          </a>
 
           {/* Desktop nav */}
           <ul className="hidden md:flex gap-10 list-none">
