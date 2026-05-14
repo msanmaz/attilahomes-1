@@ -10,7 +10,7 @@ export function Footer() {
           </div>
           <p className="text-[0.8rem] text-text-muted leading-relaxed max-w-[300px]">
             İstanbul ve Bodrum yarımadasında özenle seçilmiş emlak. Her mülk
-            Attila Utkucan tarafından bizzat değerlendirilir.
+            Attila Utkucan ve ekibi tarafından bizzat değerlendirilir.
           </p>
         </div>
 
@@ -29,16 +29,15 @@ export function Footer() {
         </FooterCol>
 
         <FooterCol title="İletişim">
-          <FooterLink href="#">İstanbul Ofisi</FooterLink>
-          <FooterLink href="#">Bodrum Ofisi</FooterLink>
-          <FooterLink href="#">WhatsApp</FooterLink>
-          <FooterLink href="#">Instagram</FooterLink>
+          <FooterText>Yeşilköy Mah. Ahmet Taner Kışlalı Sk. No: 9/2 C Blok İç Kapı No: 1 Bakırköy/İstanbul</FooterText>
+          <FooterText>Adnan Menderes Cad. 1708 Sokak İskender Evleri No:4 E Blok Daire: 3 Bodrum/Muğla</FooterText>
+          <FooterLink href="mailto:info@attilahomes.com">info@attilahomes.com</FooterLink>
         </FooterCol>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-center pt-8 border-t border-border/60 gap-2">
         <p className="text-[0.7rem] text-text-muted">
-          &copy; {new Date().getFullYear()} Attila Utkucan Emlak. Tüm hakları
+          &copy; {new Date().getFullYear()} Attila Homes. Tüm hakları
           saklıdır.
         </p>
         <p className="text-[0.7rem] text-text-muted">
@@ -80,5 +79,13 @@ function FooterLink({
     >
       {children}
     </Link>
+  );
+}
+
+function FooterText({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-[0.75rem] text-text-muted mb-3 leading-relaxed">
+      {children}
+    </p>
   );
 }

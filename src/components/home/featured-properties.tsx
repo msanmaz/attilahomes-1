@@ -7,16 +7,8 @@ export async function FeaturedProperties() {
   const properties = await getFeaturedProperties(8);
 
   return (
-    <section className="py-24 px-8">
-      <div className="flex justify-between items-end mb-14">
-        <div>
-          <div className="text-[0.65rem] tracking-[0.3em] uppercase text-accent font-medium mb-3">
-            Portföy
-          </div>
-          <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] font-light">
-            Son Eklenen Mülkler
-          </h2>
-        </div>
+    <section className="py-16 px-8">
+      <div className="flex justify-end mb-8">
         <Link
           href="/properties"
           className="text-text-secondary text-[0.72rem] tracking-[0.15em] uppercase flex items-center gap-2 transition-colors duration-300 hover:text-accent group"
