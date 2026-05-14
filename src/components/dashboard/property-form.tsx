@@ -13,6 +13,7 @@ import { NEIGHBORHOODS } from "@/lib/constants";
 import { createProperty, updateProperty } from "@/lib/actions/property-actions";
 import { savePropertyImageRecord, deletePropertyImage, setCoverImage } from "@/lib/actions/media-actions";
 import { createClient as createBrowserClient } from "@/lib/supabase/client";
+import imageCompression from "browser-image-compression";
 import type { City, PropertyWithImages, PropertyType, PropertyStatus } from "@/lib/types";
 
 const LocationPicker = dynamic(() => import("./location-picker"), {
@@ -127,12 +128,18 @@ export function PropertyForm({ property }: Props) {
       const supabase = createBrowserClient();
       for (const img of images) {
         if (img.kind === "new") {
-          const ext = img.file.name.split(".").pop();
-          const path = `${propertyId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`;
+          const compressed = await imageCompression(img.file, {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+            fileType: "image/webp",
+          });
+
+          const path = `${propertyId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.webp`;
 
           const { error: uploadError } = await supabase.storage
             .from("property-images")
-            .upload(path, img.file);
+            .upload(path, compressed);
 
           if (uploadError) throw uploadError;
 
@@ -145,7 +152,7 @@ export function PropertyForm({ property }: Props) {
             url: publicUrl,
             storagePath: path,
             isCover: img.isCover,
-            fileSize: img.file.size,
+            fileSize: compressed.size,
           });
         }
       }
