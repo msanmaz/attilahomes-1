@@ -28,8 +28,8 @@ export default async function ContactPage({
             projesi hakkında — Attila kişisel danışmanlık için hazırdır.
           </p>
           <div className="space-y-6">
-            <ContactItem label="İstanbul Ofisi" value="Beşiktaş, İstanbul" detail="+90 531 344 30 90" />
-            <ContactItem label="Bodrum Ofisi" value="Bodrum Merkez, Muğla" detail="+90 531 344 30 90" />
+            <ContactItem label="İstanbul Ofisi" value="Yeşilköy Mah. Ahmet Taner Kışlalı Sk. No: 9/2 C Blok İç Kapı No: 1 Bakırköy/İstanbul" detail="+90 531 344 30 90" />
+            <ContactItem label="Bodrum Ofisi" value="Adnan Menderes Cad. 1708 Sokak İskender Evleri No:4 E Blok Daire: 3 Bodrum/Muğla" detail="+90 531 344 30 90" />
             <ContactItem label="E-posta" value="info@attilahomes.com" />
             <ContactItem label="WhatsApp" value="+90 531 344 30 90" />
           </div>
