@@ -14,7 +14,7 @@ const CITIES = [
     subtitle: "Ege Kıyısında Lüks Yaşam",
     city: "Bodrum",
     image:
-      "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&q=80",
+      "https://images.unsplash.com/photo-1600194795031-e8c60926db4f?w=800&q=80",
   },
 ];
 

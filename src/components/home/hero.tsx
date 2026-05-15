@@ -22,13 +22,13 @@ export function Hero() {
           İstanbul &amp; Bodrum Emlak
         </div>
         <h1 className="font-display text-[clamp(2rem,7vw,6.5rem)] font-light leading-[1.05] mb-4 md:mb-6 animate-[fade-up_1s_var(--ease-smooth)_0.5s_both]">
-          Hayalinizdeki
+          Seçilmiş Mülkler,
           <br />
-          <em className="italic text-accent">Eşsiz</em> Evi Bulun
+          <em className="italic text-accent">Ayrıcalıklı</em> Yaşamlar
         </h1>
         <p className="text-base text-text-secondary max-w-[500px] leading-[1.7] font-light animate-[fade-up_0.8s_var(--ease-smooth)_0.7s_both]">
-          İstanbul&apos;un en gözde semtleri ve Bodrum kıyılarından özenle
-          seçilmiş mülkler. Attila Utkucan küratörlüğünde.
+          İstanbul&apos;un seçkin semtlerinden Bodrum kıyılarına uzanan, özenle
+          küratörlenmiş bir gayrimenkul seçkisi.
         </p>
         <div className="flex gap-4 mt-10 animate-[fade-up_0.8s_var(--ease-smooth)_0.9s_both]">
           <Link href="/properties">

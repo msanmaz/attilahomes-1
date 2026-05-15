@@ -1,12 +1,18 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   return (
     <footer className="pt-16 pb-8 px-8 border-t border-border bg-bg-secondary">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-8 mb-12">
         <div>
-          <div className="font-display text-2xl font-light tracking-[0.2em] mb-4">
-            ATTIL<span className="text-accent">A</span>
+          <div className="relative h-10 w-[160px] mb-4">
+            <Image
+              src="/logo-transparent.png"
+              alt="Attila Homes"
+              fill
+              className="object-contain object-left"
+            />
           </div>
           <p className="text-[0.8rem] text-text-muted leading-relaxed max-w-[300px]">
             İstanbul ve Bodrum yarımadasında özenle seçilmiş emlak. Her mülk
@@ -22,16 +28,38 @@ export function Footer() {
         </FooterCol>
 
         <FooterCol title="Şirket">
-          <FooterLink href="/about">Attila Hakkında</FooterLink>
-          <FooterLink href="#">Renovasyon Projeleri</FooterLink>
-          <FooterLink href="#">Basın</FooterLink>
-          <FooterLink href="#">İş Birlikleri</FooterLink>
+          <FooterLink href="/about">Hakkımızda</FooterLink>
+          <FooterLink href="/contact">İletişim</FooterLink>
+          <FooterLink href="#">Blog</FooterLink>
         </FooterCol>
 
         <FooterCol title="İletişim">
-          <FooterText>Yeşilköy Mah. Ahmet Taner Kışlalı Sk. No: 9/2 C Blok İç Kapı No: 1 Bakırköy/İstanbul</FooterText>
-          <FooterText>Adnan Menderes Cad. 1708 Sokak İskender Evleri No:4 E Blok Daire: 3 Bodrum/Muğla</FooterText>
           <FooterLink href="mailto:info@attilahomes.com">info@attilahomes.com</FooterLink>
+          <FooterLink href="tel:+905313443090">+90 531 344 30 90</FooterLink>
+          <a
+            href="https://www.instagram.com/attilahomes"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-[0.8rem] text-text-muted mt-1 transition-colors duration-300 hover:text-accent"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none" />
+            </svg>
+            @attilahomes
+          </a>
         </FooterCol>
       </div>
 
@@ -82,10 +110,3 @@ function FooterLink({
   );
 }
 
-function FooterText({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-[0.75rem] text-text-muted mb-3 leading-relaxed">
-      {children}
-    </p>
-  );
-}

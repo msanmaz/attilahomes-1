@@ -8,10 +8,19 @@ export async function FeaturedProperties() {
 
   return (
     <section className="py-16 px-8">
-      <div className="flex justify-end mb-8">
+      <div className="flex items-end justify-between mb-8">
+        <div>
+          <div className="text-[0.55rem] tracking-[0.3em] uppercase text-accent font-medium mb-1.5">
+            Seçilmiş
+          </div>
+          <div className="font-display text-[clamp(1.6rem,3vw,2.2rem)] font-light tracking-[0.06em] leading-none">
+            Portföy
+          </div>
+        </div>
+
         <Link
           href="/properties"
-          className="text-text-secondary text-[0.72rem] tracking-[0.15em] uppercase flex items-center gap-2 transition-colors duration-300 hover:text-accent group"
+          className="text-text-secondary text-[0.72rem] tracking-[0.15em] uppercase flex items-center gap-2 transition-colors duration-300 hover:text-accent group pb-0.5"
         >
           Tümünü Gör
           <svg

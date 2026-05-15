@@ -65,71 +65,79 @@ export function Navbar() {
               : "bg-[#0f0f0f]",
         )}
       >
-        <div className={cn(
-          "h-full px-6 md:px-8",
-          /* Mobile: flex, logo left + hamburger right */
-          "flex items-center justify-between",
-          /* Desktop: 3-column grid so logo is always centred */
-          "md:grid md:grid-cols-[1fr_auto_1fr]",
-        )}>
+        {/*
+          Same 3-col grid at all sizes.
+          Mobile:  col1=logo  col2=phone(center)  col3=burger
+          Desktop: col1=phone col2=logo(center)   col3=nav-links
+        */}
+        <div className="h-full px-6 md:px-8 grid grid-cols-[1fr_auto_1fr] items-center">
 
-          {/* ── LEFT: phone number ── */}
-          <a
-            href="tel:+905313443090"
-            className="hidden md:flex flex-col gap-0.5 group"
-          >
-            <span className="text-[0.5rem] tracking-[0.3em] uppercase text-accent/80 font-medium transition-colors duration-300 group-hover:text-accent">
-              Bize Ulaşın
-            </span>
-            <span className="text-[0.78rem] tracking-[0.06em] text-text-secondary font-light transition-colors duration-300 group-hover:text-text-primary">
-              +90 531 344 30 90
-            </span>
-          </a>
-
-          {/* ── CENTER: logo ── */}
+          {/* ── LOGO: col-1 on mobile → col-2 on desktop ── */}
           <Link
             href="/"
-            className="relative h-10 md:h-14 w-[160px] md:w-[240px] block md:justify-self-center"
+            className={cn(
+              "relative block",
+              "col-start-1 h-9 w-[110px] justify-self-start",
+              "md:col-start-2 md:h-14 md:w-[240px] md:justify-self-center",
+            )}
           >
             <Image
               src="/logo-transparent.png"
               alt="Attila Homes"
               fill
-              className="object-contain"
+              className="object-contain object-left md:object-center"
               priority
             />
           </Link>
 
-          {/* ── RIGHT: nav links ── */}
-          <ul className="hidden md:flex items-center justify-end gap-8 list-none">
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className={cn(
-                    "relative text-[0.68rem] tracking-[0.15em] uppercase font-normal transition-colors duration-300",
-                    "after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-accent after:transition-[width] after:duration-400",
-                    isActive(link.href)
-                      ? "text-accent after:w-full"
-                      : "text-text-secondary hover:text-accent hover:after:w-full",
-                  )}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          {/* ── MOBILE: hamburger ── */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="flex md:hidden flex-col justify-center items-center w-10 h-10 gap-1.5 cursor-pointer bg-transparent border-none"
-            aria-label="Menü"
+          {/* ── PHONE: col-2 center on mobile → col-1 left on desktop ── */}
+          <a
+            href="tel:+905313443090"
+            className={cn(
+              "flex flex-col items-center gap-0 group",
+              "col-start-2 justify-self-center",
+              "md:col-start-1 md:items-start md:gap-0.5",
+            )}
           >
-            <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "translate-y-[3.5px] rotate-45")} />
-            <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "opacity-0")} />
-            <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "-translate-y-[3.5px] -rotate-45")} />
-          </button>
+            <span className="hidden md:block text-[0.5rem] tracking-[0.3em] uppercase text-accent/80 font-medium transition-colors duration-300 group-hover:text-accent">
+              Bize Ulaşın
+            </span>
+            <span className="text-[0.62rem] md:text-[0.78rem] tracking-[0.06em] text-text-secondary font-light transition-colors duration-300 group-hover:text-text-primary">
+              +90 531 344 30 90
+            </span>
+          </a>
+
+          {/* ── RIGHT: nav links (desktop) + hamburger (mobile) — always col-3 ── */}
+          <div className="col-start-3 flex items-center justify-end">
+            <ul className="hidden md:flex items-center gap-8 list-none">
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className={cn(
+                      "relative text-[0.68rem] tracking-[0.15em] uppercase font-normal transition-colors duration-300",
+                      "after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-accent after:transition-[width] after:duration-400",
+                      isActive(link.href)
+                        ? "text-accent after:w-full"
+                        : "text-text-secondary hover:text-accent hover:after:w-full",
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex md:hidden flex-col justify-center items-center w-10 h-10 gap-1.5 cursor-pointer bg-transparent border-none"
+              aria-label="Menü"
+            >
+              <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "translate-y-[3.5px] rotate-45")} />
+              <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "opacity-0")} />
+              <span className={cn("block w-5 h-px bg-text-primary transition-all duration-300", menuOpen && "-translate-y-[3.5px] -rotate-45")} />
+            </button>
+          </div>
         </div>
       </nav>
 
