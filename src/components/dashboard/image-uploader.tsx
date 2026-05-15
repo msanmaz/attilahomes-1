@@ -16,6 +16,7 @@ export type NewImage = {
   id: string;
   previewUrl: string;
   file: File;
+  compressedBlob?: Blob;
   isCover: boolean;
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -8,7 +8,7 @@ import { Input, Textarea, Select, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import { FeatureTags } from "@/components/dashboard/feature-tags";
-import { ImageUploader, type ManagedImage, type ExistingImage } from "@/components/dashboard/image-uploader";
+import { ImageUploader, type ManagedImage, type ExistingImage, type NewImage } from "@/components/dashboard/image-uploader";
 import { NEIGHBORHOODS } from "@/lib/constants";
 import { createProperty, updateProperty } from "@/lib/actions/property-actions";
 import { insertPropertyImages, deletePropertyImage, setCoverImage } from "@/lib/actions/media-actions";
@@ -62,6 +62,42 @@ export function PropertyForm({ property }: Props) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const compressingIds = useRef<Set<string>>(new Set());
+
+  async function handleImagesChange(newImages: ManagedImage[]) {
+    setImages(newImages);
+
+    const toCompress = newImages.filter(
+      (img): img is NewImage =>
+        img.kind === "new" &&
+        !img.compressedBlob &&
+        !compressingIds.current.has(img.id),
+    );
+    if (toCompress.length === 0) return;
+
+    toCompress.forEach((img) => compressingIds.current.add(img.id));
+
+    const results = await Promise.all(
+      toCompress.map((img) =>
+        imageCompression(img.file, {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+          fileType: "image/webp",
+        }).then((blob) => ({ id: img.id, blob })),
+      ),
+    );
+
+    toCompress.forEach((img) => compressingIds.current.delete(img.id));
+
+    setImages((prev) =>
+      prev.map((img) => {
+        if (img.kind !== "new") return img;
+        const result = results.find((r) => r.id === img.id);
+        return result ? { ...img, compressedBlob: result.blob } : img;
+      }),
+    );
+  }
 
   const neighborhoods = city ? NEIGHBORHOODS[city as City] ?? [] : [];
 
@@ -129,16 +165,19 @@ export function PropertyForm({ property }: Props) {
       const newImages = images.filter((img): img is typeof img & { kind: "new" } => img.kind === "new");
 
       if (newImages.length > 0) {
-        // Compress all images in parallel
+        // Use pre-compressed blobs from on-drop compression; fall back if not ready
         const compressed = await Promise.all(
-          newImages.map((img) =>
-            imageCompression(img.file, {
-              maxSizeMB: 1,
-              maxWidthOrHeight: 1920,
-              useWebWorker: true,
-              fileType: "image/webp",
-            }).then((blob) => ({ img, blob })),
-          ),
+          newImages.map(async (img) => {
+            const blob =
+              img.compressedBlob ??
+              (await imageCompression(img.file, {
+                maxSizeMB: 1,
+                maxWidthOrHeight: 1920,
+                useWebWorker: true,
+                fileType: "image/webp",
+              }));
+            return { img, blob };
+          }),
         );
 
         // Upload in parallel batches of 3, collect records
@@ -319,7 +358,7 @@ export function PropertyForm({ property }: Props) {
 
           {/* Images */}
           <FormPanel title="Property Images">
-            <ImageUploader images={images} onChange={setImages} />
+            <ImageUploader images={images} onChange={handleImagesChange} />
           </FormPanel>
 
           {/* Location */}
