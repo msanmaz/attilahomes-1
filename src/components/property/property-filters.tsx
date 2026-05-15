@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, useParams } from "next/navigation";
 import { useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { NEIGHBORHOODS } from "@/lib/constants";
@@ -11,6 +11,7 @@ export function PropertyFilters() {
   const dict = useDictionary();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { locale } = useParams<{ locale: string }>();
 
   const city = searchParams.get("city") || "";
   const type = searchParams.get("type") || "";
@@ -35,12 +36,12 @@ export function PropertyFilters() {
         params.delete(key);
       }
       if (key === "city") params.delete("neighborhood");
-      router.push(`/properties?${params.toString()}`);
+      router.push(`/${locale}/properties?${params.toString()}`);
     },
     [router, searchParams],
   );
 
-  const clearAll = () => router.push("/properties");
+  const clearAll = () => router.push(`/${locale}/properties`);
 
   const neighborhoods = city
     ? NEIGHBORHOODS[city as City] || []
