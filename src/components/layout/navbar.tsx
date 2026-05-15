@@ -2,22 +2,28 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-
-const NAV_LINKS = [
-  { label: "Ana Sayfa", href: "/" },
-  { label: "Satılık", href: "/properties?type=sale" },
-  { label: "Kiralık", href: "/properties?type=rent" },
-  { label: "Hakkımızda", href: "/about" },
-  { label: "İletişim", href: "/contact" },
-];
+import { useDictionary } from "@/components/providers/dictionary-provider";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 export function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const params = useParams();
+  const locale = (params?.locale as string) ?? "tr";
+  const { nav } = useDictionary();
+
+  const NAV_LINKS = [
+    { label: nav.home,    href: `/${locale}` },
+    { label: nav.forSale, href: `/${locale}/properties?type=sale` },
+    { label: nav.forRent, href: `/${locale}/properties?type=rent` },
+    { label: nav.about,   href: `/${locale}/about` },
+    { label: nav.contact, href: `/${locale}/contact` },
+  ];
 
   useEffect(() => {
     setMenuOpen(false);
@@ -28,13 +34,13 @@ export function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  function isActive(href: string) {
-    if (href === "/") return pathname === "/";
+  function isActive(href: string): boolean {
+    if (href === `/${locale}`) return pathname === `/${locale}`;
     const [path, query] = href.split("?");
     if (!pathname.startsWith(path)) return false;
     if (query) {
-      const params = new URLSearchParams(query);
-      for (const [key, value] of params) {
+      const queryParams = new URLSearchParams(query);
+      for (const [key, value] of queryParams) {
         if (searchParams.get(key) !== value) return false;
       }
       return true;
@@ -42,7 +48,7 @@ export function Navbar() {
     return !searchParams.get("type");
   }
 
-  const isHomepage = pathname === "/";
+  const isHomepage = pathname === `/${locale}`;
 
   return (
     <>
@@ -67,7 +73,7 @@ export function Navbar() {
             className="hidden md:flex flex-col gap-0.5 group"
           >
             <span className="text-[0.5rem] tracking-[0.3em] uppercase text-accent/80 font-medium transition-colors duration-300 group-hover:text-accent">
-              Bize Ulaşın
+              {nav.callUs}
             </span>
             <span className="text-[0.78rem] tracking-[0.06em] text-text-secondary font-light transition-colors duration-300 group-hover:text-text-primary">
               +90 531 344 30 90
@@ -84,7 +90,7 @@ export function Navbar() {
 
           {/* ── LOGO: auto-placed at col 2 (desktop) / col 1 (mobile, only in-flow item left) ── */}
           <Link
-            href="/"
+            href={`/${locale}`}
             className="relative block h-9 md:h-14 w-[110px] md:w-[240px] justify-self-start md:justify-self-center"
           >
             <Image
@@ -116,6 +122,10 @@ export function Navbar() {
                 </li>
               ))}
             </ul>
+
+            <div className="hidden md:flex items-center ml-5 pl-5 border-l border-border/30">
+              <LanguageSwitcher variant="inline" />
+            </div>
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -154,6 +164,7 @@ export function Navbar() {
           >
             +90 531 344 30 90
           </a>
+          <LanguageSwitcher variant="stacked" />
         </div>
       )}
     </>
