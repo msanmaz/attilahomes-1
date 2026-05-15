@@ -8,9 +8,9 @@ import type { Locale } from "@/lib/i18n";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Mülkler",
+  title: "Properties",
   description:
-    "İstanbul ve Bodrum'daki özenle seçilmiş mülkleri keşfedin. Şehir, tür, yatak odası ve fiyata göre filtreleyin.",
+    "Explore carefully curated properties in Istanbul and Bodrum. Filter by city, type, bedrooms and price.",
 };
 
 type Props = {
@@ -35,13 +35,13 @@ export default async function PropertiesPage({ params, searchParams }: Props) {
     <>
       <div className="pt-32 pb-12 px-8 bg-bg-secondary border-b border-border">
         <div className="text-[0.65rem] tracking-[0.3em] uppercase text-accent font-medium mb-3">
-          Portföy
+          {dict.propertiesPage.eyebrow}
         </div>
         <h1 className="font-display text-[clamp(2.5rem,5vw,4rem)] font-light mb-2">
-          Tüm Mülkler
+          {dict.propertiesPage.title}
         </h1>
         <p className="text-text-secondary text-[0.9rem] font-light">
-          Özenle seçilmiş konut koleksiyonumuzu keşfedin
+          {dict.propertiesPage.subtitle}
         </p>
       </div>
 
