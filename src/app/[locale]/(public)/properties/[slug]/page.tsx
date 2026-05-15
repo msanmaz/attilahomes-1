@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import type { Metadata } from "next";
+import { LocaleLink } from "@/components/ui/locale-link";
+import type { Locale } from "@/lib/i18n";
 import { getPropertyBySlug } from "@/lib/queries/properties";
 import { Badge } from "@/components/ui/badge";
 import { PropertyGallery } from "@/components/property/property-gallery";
@@ -43,21 +44,22 @@ const NEARBY_ICONS: Record<NearbyIcon, React.ReactNode> = {
 };
 
 export default async function PropertyDetailPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const property = await getPropertyBySlug(slug);
   if (!property) notFound();
 
   return (
     <div className="pt-20">
-      <Link
+      <LocaleLink
         href="/properties"
+        locale={locale as Locale}
         className="inline-flex items-center gap-2 px-8 py-6 text-text-secondary text-[0.72rem] tracking-[0.1em] uppercase transition-colors duration-300 hover:text-accent"
       >
         <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none stroke-[1.5]">
           <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
         İlanlara Dön
-      </Link>
+      </LocaleLink>
 
       <PropertyGallery images={property.images} name={property.name} />
 

@@ -1,20 +1,22 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { PropertyWithImages } from "@/lib/types";
-import type { Dictionary } from "@/lib/i18n";
+import type { Dictionary, Locale } from "@/lib/i18n";
 import { Badge } from "@/components/ui/badge";
+import { LocaleLink } from "@/components/ui/locale-link";
 
 type PropertyCardProps = {
   property: PropertyWithImages;
   dict: Dictionary["property"];
+  locale: Locale;
 };
 
-export function PropertyCard({ property: p, dict }: PropertyCardProps) {
+export function PropertyCard({ property: p, dict, locale }: PropertyCardProps) {
   const coverImage = p.images.find((i) => i.isCover) || p.images[0];
 
   return (
-    <Link
+    <LocaleLink
       href={`/properties/${p.slug}`}
+      locale={locale}
       className="group bg-bg-card border border-border/40 overflow-hidden transition-all duration-500 hover:border-accent/15 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)]"
       style={{ transitionTimingFunction: "var(--ease-smooth)" }}
     >
@@ -64,6 +66,6 @@ export function PropertyCard({ property: p, dict }: PropertyCardProps) {
           </div>
         </div>
       </div>
-    </Link>
+    </LocaleLink>
   );
 }

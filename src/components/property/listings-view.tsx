@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { PropertyWithImages } from "@/lib/types";
-import type { Dictionary } from "@/lib/i18n";
+import type { Dictionary, Locale } from "@/lib/i18n";
 import { PropertyCard } from "@/components/property/property-card";
 import { ListingsMap } from "@/components/map/map-provider";
 
@@ -12,16 +12,17 @@ type Props = {
   properties: PropertyWithImages[];
   total: number;
   propertyDict: Dictionary["property"];
+  locale: Locale;
 };
 
-export function ListingsView({ properties, total, propertyDict }: Props) {
+export function ListingsView({ properties, total, propertyDict, locale }: Props) {
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const router = useRouter();
 
   const goToProperty = useCallback(
-    (slug: string) => router.push(`/properties/${slug}`),
-    [router],
+    (slug: string) => router.push(`/${locale}/properties/${slug}`),
+    [router, locale],
   );
 
   return (
@@ -63,7 +64,7 @@ export function ListingsView({ properties, total, propertyDict }: Props) {
       {viewMode === "grid" && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-8 py-8 pb-24">
           {properties.length > 0 ? (
-            properties.map((p) => <PropertyCard key={p.id} property={p} dict={propertyDict} />)
+            properties.map((p) => <PropertyCard key={p.id} property={p} dict={propertyDict} locale={locale} />)
           ) : (
             <div className="col-span-full text-center py-16">
               <p className="font-display text-2xl mb-2">Kriterlerinize uygun mülk bulunamadı</p>
@@ -91,7 +92,7 @@ export function ListingsView({ properties, total, propertyDict }: Props) {
                       : "border-transparent",
                   )}
                 >
-                  <PropertyCard property={p} dict={propertyDict} />
+                  <PropertyCard property={p} dict={propertyDict} locale={locale} />
                 </div>
               ))}
             </div>

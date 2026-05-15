@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/locale-link";
+import type { Locale } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Hakkımızda — Attila Homes",
@@ -13,7 +14,7 @@ export default async function AboutPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  await params; // locale available for future use
+  const { locale } = await params;
   return (
     <>
       {/* Hero */}
@@ -73,12 +74,13 @@ export default async function AboutPage({
             İki şehrin lokali Attila Utkucan ve ekibi ile doğru mülkü bulun.
           </p>
           <div className="mt-2">
-            <Link
+            <LocaleLink
               href="/contact"
+              locale={locale as Locale}
               className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-bg-primary text-[0.72rem] tracking-[0.18em] uppercase font-medium transition-all duration-300 hover:bg-accent-hover"
             >
               İletişime Geçin
-            </Link>
+            </LocaleLink>
           </div>
         </div>
       </section>

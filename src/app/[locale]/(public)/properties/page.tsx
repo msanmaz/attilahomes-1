@@ -49,7 +49,7 @@ export default async function PropertiesPage({ params, searchParams }: Props) {
         <PropertyFilters />
       </Suspense>
 
-      <ListingsView properties={filtered} total={filtered.length} propertyDict={dict.property} />
+      <ListingsView properties={filtered} total={filtered.length} propertyDict={dict.property} locale={locale as Locale} />
     </>
   );
 }
