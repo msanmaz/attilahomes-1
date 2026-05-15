@@ -98,6 +98,7 @@ export type Dictionary = {
     aboutSection: string;
     locationSection: string;
     nearbySection: string;
+    featuresSection: string;
     notFound: string;
   };
   sidebar: {

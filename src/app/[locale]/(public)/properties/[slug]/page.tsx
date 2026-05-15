@@ -109,7 +109,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             <p className="text-text-secondary leading-[1.8] text-[0.9rem] font-light">{property.description}</p>
           </div>
 
-          <PropertyFeatures features={property.features} />
+          <PropertyFeatures features={property.features} heading={dict.propertyDetail.featuresSection} />
 
           {property.lat && property.lng && (
             <div className="mb-10">

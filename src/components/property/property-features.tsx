@@ -1,12 +1,13 @@
 type Props = {
   features: string[];
+  heading: string;
 };
 
-export function PropertyFeatures({ features }: Props) {
+export function PropertyFeatures({ features, heading }: Props) {
   return (
     <div className="mb-10">
       <h3 className="font-display text-2xl font-normal mb-4">
-        Özellikler &amp; Olanaklar
+        {heading}
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         {features.map((f) => (
