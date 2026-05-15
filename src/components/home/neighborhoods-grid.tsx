@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Dictionary, Locale } from "@/lib/i18n";
 
 const CITIES = [
   {
@@ -18,7 +19,12 @@ const CITIES = [
   },
 ];
 
-export function NeighborhoodsGrid() {
+type NeighborhoodsGridProps = {
+  dict: Dictionary["neighborhoods"];
+  locale: Locale;
+};
+
+export function NeighborhoodsGrid({ dict: _dict, locale: _locale }: NeighborhoodsGridProps) {
   return (
     <section className="py-24 px-8 bg-bg-secondary">
       <div className="mb-14">

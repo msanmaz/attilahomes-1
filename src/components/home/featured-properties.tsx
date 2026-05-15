@@ -2,8 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { getFeaturedProperties } from "@/lib/queries/properties";
 import type { PropertyWithImages } from "@/lib/types";
+import type { Dictionary, Locale } from "@/lib/i18n";
 
-export async function FeaturedProperties() {
+type FeaturedPropertiesProps = {
+  dict: Dictionary["featured"];
+  locale: Locale;
+};
+
+export async function FeaturedProperties({ dict: _dict, locale: _locale }: FeaturedPropertiesProps) {
   const properties = await getFeaturedProperties(8);
 
   return (

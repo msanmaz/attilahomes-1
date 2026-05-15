@@ -1,7 +1,13 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import type { Dictionary, Locale } from "@/lib/i18n";
 
-export function AboutSection() {
+type AboutSectionProps = {
+  dict: Dictionary["about"];
+  locale: Locale;
+};
+
+export function AboutSection({ dict: _dict, locale: _locale }: AboutSectionProps) {
   return (
     <section className="grid grid-cols-1 lg:grid-cols-[0.42fr_0.58fr] gap-20 items-center py-28 px-8 bg-bg-secondary border-t border-border">
       <div className="relative overflow-hidden group">
@@ -30,17 +36,21 @@ export function AboutSection() {
           Attila Utkucan
         </h2>
 
+        {/* Tagline */}
+        <p className="font-display text-[1.15rem] italic font-light text-accent/80 leading-[1.6] mb-8 tracking-[0.02em]">
+          İstanbul&apos;un enerjisi, Bodrum&apos;un ayrıcalığı —<br />
+          tek bir çatı altında.
+        </p>
+
         {/* First paragraph with left accent rule */}
         <div className="flex gap-5 mb-8">
           <div className="w-px shrink-0 bg-accent/25 self-stretch mt-1" />
           <p className="text-text-secondary text-[1.05rem] leading-[1.9] font-light">
-            İstanbul&apos;da kökleri olan, Bodrum ve İstanbul pazarlarına derin
-            hakimiyetiyle tanınan bağımsız bir emlak danışmanı. Attila,
-            itibarını potansiyeli sezme yeteneği üzerine inşa etmiştir —
-            başkalarının eskimişlik gördüğü yerde değeri, yaşlanma gördüğü
-            yerde karakteri keşfeder. Müşterileri ona dürüst rehberliği, yerel
-            bilgisi ve bir mülkün ne olabileceğini gören keskin bakışı için
-            güvenir.
+            Attila Utkucan, İstanbul&apos;da büyüdü; her yaz Bodrum&apos;da
+            geçirdi. Her iki şehirde de küçüklüğünden beri inşaat ve
+            gayrimenkul dünyasının içinde olan biri olarak, bu iki kentin
+            sadece coğrafyasını değil, ruhunu da tanıyor. Attila Homes, bu
+            kişisel hikayeden doğan bir marka.
           </p>
         </div>
 
@@ -53,13 +63,10 @@ export function AboutSection() {
 
         {/* Second paragraph */}
         <p className="text-text-secondary text-[1.05rem] leading-[1.9] font-light mb-10">
-          Danışmanlığın ötesinde Attila, İstanbul&apos;un eskiyen
-          apartmanlarını çağdaş yaşam alanlarına dönüştürme konusunda
-          uzmanlaşmış, sahada çalışan bir geliştiricidir. Tarihi
-          semtlerdeki bakımsız binaları keşfetmekten renovasyonun her
-          detayını bizzat yönetmeye kadar, vizyon ile gerçeklik arasındaki
-          köprüyü kurar — mirasına sadık kalırken çağdaş standartları
-          karşılayan evler sunar.
+          Gayrimenkulü bir satış kalemi olarak değil, yaşam tarzı ve
+          stratejik yatırım olarak değerlendiriyoruz. Bu yüzden standart
+          bir satış süreci değil, kişiselleştirilmiş ve sonuç odaklı bir
+          deneyim sunuyoruz.
         </p>
 
         <Button variant="outline">Daha Fazla</Button>
