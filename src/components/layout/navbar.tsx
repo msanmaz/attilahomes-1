@@ -66,20 +66,37 @@ export function Navbar() {
         )}
       >
         {/*
-          Same 3-col grid at all sizes.
-          Mobile:  col1=logo  col2=phone(center)  col3=burger
-          Desktop: col1=phone col2=logo(center)   col3=nav-links
+          Desktop: phone(auto-placed col1) | logo(auto-placed col2) | nav(col-start-3)
+          Mobile:  logo(auto-placed col1)  | [col2 empty]           | burger(col-start-3)
+                   phone is absolute-centered, out of grid flow on mobile
         */}
-        <div className="h-full px-6 md:px-8 grid grid-cols-[1fr_auto_1fr] items-center">
+        <div className="relative h-full px-6 md:px-8 grid grid-cols-[1fr_auto_1fr] items-center">
 
-          {/* ── LOGO: col-1 on mobile → col-2 on desktop ── */}
+          {/* ── PHONE desktop: first in-flow item → auto-placed at col 1 ── */}
+          <a
+            href="tel:+905313443090"
+            className="hidden md:flex flex-col gap-0.5 group"
+          >
+            <span className="text-[0.5rem] tracking-[0.3em] uppercase text-accent/80 font-medium transition-colors duration-300 group-hover:text-accent">
+              Bize Ulaşın
+            </span>
+            <span className="text-[0.78rem] tracking-[0.06em] text-text-secondary font-light transition-colors duration-300 group-hover:text-text-primary">
+              +90 531 344 30 90
+            </span>
+          </a>
+
+          {/* ── PHONE mobile: absolute center, out of grid flow ── */}
+          <a
+            href="tel:+905313443090"
+            className="md:hidden absolute left-1/2 -translate-x-1/2 text-[0.62rem] tracking-[0.08em] text-text-secondary font-light transition-colors duration-300 hover:text-accent whitespace-nowrap"
+          >
+            +90 531 344 30 90
+          </a>
+
+          {/* ── LOGO: auto-placed at col 2 (desktop) / col 1 (mobile, only in-flow item left) ── */}
           <Link
             href="/"
-            className={cn(
-              "relative block",
-              "col-start-1 h-9 w-[110px] justify-self-start",
-              "md:col-start-2 md:h-14 md:w-[240px] md:justify-self-center",
-            )}
+            className="relative block h-9 md:h-14 w-[110px] md:w-[240px] justify-self-start md:justify-self-center"
           >
             <Image
               src="/logo-transparent.png"
@@ -90,24 +107,7 @@ export function Navbar() {
             />
           </Link>
 
-          {/* ── PHONE: col-2 center on mobile → col-1 left on desktop ── */}
-          <a
-            href="tel:+905313443090"
-            className={cn(
-              "flex flex-col items-center gap-0 group",
-              "col-start-2 justify-self-center",
-              "md:col-start-1 md:items-start md:gap-0.5",
-            )}
-          >
-            <span className="hidden md:block text-[0.5rem] tracking-[0.3em] uppercase text-accent/80 font-medium transition-colors duration-300 group-hover:text-accent">
-              Bize Ulaşın
-            </span>
-            <span className="text-[0.62rem] md:text-[0.78rem] tracking-[0.06em] text-text-secondary font-light transition-colors duration-300 group-hover:text-text-primary">
-              +90 531 344 30 90
-            </span>
-          </a>
-
-          {/* ── RIGHT: nav links (desktop) + hamburger (mobile) — always col-3 ── */}
+          {/* ── RIGHT: nav links (desktop) + hamburger (mobile) — pinned to col 3 ── */}
           <div className="col-start-3 flex items-center justify-end">
             <ul className="hidden md:flex items-center gap-8 list-none">
               {NAV_LINKS.map((link) => (
