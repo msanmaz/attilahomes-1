@@ -11,17 +11,19 @@ export const metadata: Metadata = {
 };
 
 type Props = {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<Record<string, string | undefined>>;
 };
 
-export default async function PropertiesPage({ searchParams }: Props) {
-  const params = await searchParams;
+export default async function PropertiesPage({ params, searchParams }: Props) {
+  await params; // locale available for future use
+  const searchParamsResolved = await searchParams;
   const filtered = await getActiveProperties({
-    city: params.city,
-    type: params.type,
-    neighborhood: params.neighborhood,
-    bedrooms: params.bedrooms,
-    sort: params.sort,
+    city: searchParamsResolved.city,
+    type: searchParamsResolved.type,
+    neighborhood: searchParamsResolved.neighborhood,
+    bedrooms: searchParamsResolved.bedrooms,
+    sort: searchParamsResolved.sort,
   });
 
   return (

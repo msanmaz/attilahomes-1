@@ -8,7 +8,12 @@ export const metadata: Metadata = {
     "İstanbul'un enerjisi, Bodrum'un ayrıcalığı — tek bir çatı altında. Attila Homes'un hikayesini ve felsefesini keşfedin.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  await params; // locale available for future use
   return (
     <>
       {/* Hero */}

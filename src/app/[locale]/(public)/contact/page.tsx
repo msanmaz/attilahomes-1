@@ -7,7 +7,12 @@ export const metadata: Metadata = {
     "İstanbul ve Bodrum'daki mülk sorularınız için Attila Utkucan ile iletişime geçin.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  await params; // locale available for future use
   return (
     <div className="pt-32 pb-24 px-8">
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-16">
