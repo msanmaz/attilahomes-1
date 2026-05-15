@@ -1,0 +1,58 @@
+{
+  "nav": {
+    "home": "Ana Sayfa",
+    "forSale": "Satılık",
+    "forRent": "Kiralık",
+    "about": "Hakkımızda",
+    "contact": "İletişim",
+    "callUs": "Bize Ulaşın"
+  },
+  "hero": {
+    "location": "İstanbul & Bodrum Emlak",
+    "headline1": "Seçilmiş Mülkler,",
+    "headlineAccent": "Ayrıcalıklı",
+    "headline2": "Yaşamlar",
+    "subtext": "İstanbul'un seçkin semtlerinden Bodrum kıyılarına uzanan, özenle küratörlenmiş bir gayrimenkul seçkisi.",
+    "cta": "Mülkleri Keşfet",
+    "scroll": "Kaydır"
+  },
+  "featured": {
+    "eyebrow": "Seçilmiş",
+    "title": "Portföy",
+    "viewAll": "Tümünü Gör",
+    "empty": "Henüz öne çıkan mülk yok. Panelden ekleyebilirsiniz."
+  },
+  "about": {
+    "eyebrow": "Hakkında",
+    "name": "Attila Utkucan",
+    "bio1": "İstanbul'da kökleri olan, Bodrum ve İstanbul pazarlarına derin hakimiyetiyle tanınan bağımsız bir emlak danışmanı. Attila, itibarını potansiyeli sezme yeteneği üzerine inşa etmiştir — başkalarının eskimişlik gördüğü yerde değeri, yaşlanma gördüğü yerde karakteri keşfeder. Müşterileri ona dürüst rehberliği, yerel bilgisi ve bir mülkün ne olabileceğini gören keskin bakışı için güvenir.",
+    "bio2": "Danışmanlığın ötesinde Attila, İstanbul'un eskiyen apartmanlarını çağdaş yaşam alanlarına dönüştürme konusunda uzmanlaşmış, sahada çalışan bir geliştiricidir. Tarihi semtlerdeki bakımsız binaları keşfetmekten renovasyonun her detayını bizzat yönetmeye kadar, vizyon ile gerçeklik arasındaki köprüyü kurar — mirasına sadık kalırken çağdaş standartları karşılayan evler sunar.",
+    "more": "Daha Fazla"
+  },
+  "neighborhoods": {
+    "eyebrow": "Keşfet",
+    "title": "Şehirler",
+    "istanbulSubtitle": "Boğaz'ın İki Yakasında Eşsiz Yaşam",
+    "bodrumSubtitle": "Ege Kıyısında Lüks Yaşam"
+  },
+  "footer": {
+    "description": "İstanbul ve Bodrum yarımadasında özenle seçilmiş emlak. Her mülk Attila Utkucan ve ekibi tarafından bizzat değerlendirilir.",
+    "properties": "Emlaklar",
+    "forSale": "Satılık",
+    "forRent": "Kiralık",
+    "company": "Şirket",
+    "about": "Hakkımızda",
+    "contact": "İletişim",
+    "blog": "Blog",
+    "contactSection": "İletişim",
+    "rights": "Tüm hakları saklıdır.",
+    "crafted": "Titizlikle tasarlandı"
+  },
+  "property": {
+    "sale": "Satılık",
+    "rent": "Kiralık",
+    "beds": "Yatak",
+    "baths": "Banyo",
+    "sqm": "m²"
+  }
+}

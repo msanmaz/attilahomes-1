@@ -1,0 +1,58 @@
+{
+  "nav": {
+    "home": "Home",
+    "forSale": "For Sale",
+    "forRent": "For Rent",
+    "about": "About",
+    "contact": "Contact",
+    "callUs": "Call Us"
+  },
+  "hero": {
+    "location": "Istanbul & Bodrum Real Estate",
+    "headline1": "Curated Properties,",
+    "headlineAccent": "Exclusive",
+    "headline2": "Lifestyles",
+    "subtext": "A hand-curated real estate selection spanning Istanbul's finest districts to the shores of Bodrum.",
+    "cta": "Explore Properties",
+    "scroll": "Scroll"
+  },
+  "featured": {
+    "eyebrow": "Curated",
+    "title": "Portfolio",
+    "viewAll": "View All",
+    "empty": "No featured properties yet. Add them from the dashboard."
+  },
+  "about": {
+    "eyebrow": "About",
+    "name": "Attila Utkucan",
+    "bio1": "An independent real estate advisor rooted in Istanbul, known for his deep mastery of both the Istanbul and Bodrum markets. Attila has built his reputation on the ability to sense potential — spotting value where others see disrepair, and character where others see age. Clients trust him for his honest guidance, local knowledge, and a sharp eye for what a property could become.",
+    "bio2": "Beyond consultancy, Attila is a hands-on developer specialised in transforming Istanbul's ageing apartment buildings into contemporary living spaces. From discovering neglected buildings in historic neighbourhoods to personally overseeing every detail of the renovation, he bridges vision and reality — delivering homes that honour their heritage while meeting modern standards.",
+    "more": "Learn More"
+  },
+  "neighborhoods": {
+    "eyebrow": "Explore",
+    "title": "Cities",
+    "istanbulSubtitle": "Unique Living on Both Shores of the Bosphorus",
+    "bodrumSubtitle": "Luxury Living on the Aegean Coast"
+  },
+  "footer": {
+    "description": "Carefully selected real estate across Istanbul and the Bodrum peninsula. Every property is personally evaluated by Attila Utkucan and his team.",
+    "properties": "Properties",
+    "forSale": "For Sale",
+    "forRent": "For Rent",
+    "company": "Company",
+    "about": "About",
+    "contact": "Contact",
+    "blog": "Blog",
+    "contactSection": "Contact",
+    "rights": "All rights reserved.",
+    "crafted": "Meticulously crafted"
+  },
+  "property": {
+    "sale": "For Sale",
+    "rent": "For Rent",
+    "beds": "Bed",
+    "baths": "Bath",
+    "sqm": "m²"
+  }
+}
