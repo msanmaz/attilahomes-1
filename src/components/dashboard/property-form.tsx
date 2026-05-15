@@ -11,7 +11,7 @@ import { FeatureTags } from "@/components/dashboard/feature-tags";
 import { ImageUploader, type ManagedImage, type ExistingImage } from "@/components/dashboard/image-uploader";
 import { NEIGHBORHOODS } from "@/lib/constants";
 import { createProperty, updateProperty } from "@/lib/actions/property-actions";
-import { savePropertyImageRecord, deletePropertyImage, setCoverImage } from "@/lib/actions/media-actions";
+import { insertPropertyImages, deletePropertyImage, setCoverImage } from "@/lib/actions/media-actions";
 import { createClient as createBrowserClient } from "@/lib/supabase/client";
 import imageCompression from "browser-image-compression";
 import type { City, PropertyWithImages, PropertyType, PropertyStatus } from "@/lib/types";
@@ -126,35 +126,57 @@ export function PropertyForm({ property }: Props) {
       }
 
       const supabase = createBrowserClient();
-      for (const img of images) {
-        if (img.kind === "new") {
-          const compressed = await imageCompression(img.file, {
-            maxSizeMB: 1,
-            maxWidthOrHeight: 1920,
-            useWebWorker: true,
-            fileType: "image/webp",
-          });
+      const newImages = images.filter((img): img is typeof img & { kind: "new" } => img.kind === "new");
 
-          const path = `${propertyId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.webp`;
+      if (newImages.length > 0) {
+        // Compress all images in parallel
+        const compressed = await Promise.all(
+          newImages.map((img) =>
+            imageCompression(img.file, {
+              maxSizeMB: 1,
+              maxWidthOrHeight: 1920,
+              useWebWorker: true,
+              fileType: "image/webp",
+            }).then((blob) => ({ img, blob })),
+          ),
+        );
 
-          const { error: uploadError } = await supabase.storage
-            .from("property-images")
-            .upload(path, compressed);
+        // Upload in parallel batches of 3, collect records
+        const CONCURRENCY = 3;
+        const imageRecords: Array<{
+          propertyId: string;
+          url: string;
+          storagePath: string;
+          isCover: boolean;
+          fileSize: number;
+        }> = [];
 
-          if (uploadError) throw uploadError;
-
-          const { data: { publicUrl } } = supabase.storage
-            .from("property-images")
-            .getPublicUrl(path);
-
-          await savePropertyImageRecord({
-            propertyId,
-            url: publicUrl,
-            storagePath: path,
-            isCover: img.isCover,
-            fileSize: compressed.size,
-          });
+        for (let i = 0; i < compressed.length; i += CONCURRENCY) {
+          const chunk = compressed.slice(i, i + CONCURRENCY);
+          const results = await Promise.all(
+            chunk.map(async ({ img, blob }) => {
+              const path = `${propertyId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.webp`;
+              const { error: uploadError } = await supabase.storage
+                .from("property-images")
+                .upload(path, blob);
+              if (uploadError) throw uploadError;
+              const { data: { publicUrl } } = supabase.storage
+                .from("property-images")
+                .getPublicUrl(path);
+              return {
+                propertyId,
+                url: publicUrl,
+                storagePath: path,
+                isCover: img.isCover,
+                fileSize: blob.size,
+              };
+            }),
+          );
+          imageRecords.push(...results);
         }
+
+        // Single batch DB insert instead of one round-trip per image
+        await insertPropertyImages(imageRecords);
       }
 
       const coverImg = images.find((i) => i.isCover && i.kind === "existing");

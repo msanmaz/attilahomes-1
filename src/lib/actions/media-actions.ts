@@ -29,6 +29,35 @@ export async function savePropertyImageRecord(data: {
   return { url: data.url, path: data.storagePath };
 }
 
+export async function insertPropertyImages(
+  records: Array<{
+    propertyId: string;
+    url: string;
+    storagePath: string;
+    isCover: boolean;
+    fileSize: number;
+  }>,
+) {
+  if (records.length === 0) return;
+  const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated.");
+
+  const { error } = await supabase.from("property_images").insert(
+    records.map((r) => ({
+      property_id: r.propertyId,
+      url: r.url,
+      storage_path: r.storagePath,
+      is_cover: r.isCover,
+      file_size: r.fileSize,
+    })),
+  );
+
+  if (error) throw error;
+  revalidatePath("/properties");
+}
+
 export async function deletePropertyImage(imageId: string, storagePath: string) {
   const supabase = await createClient();
 
