@@ -1,15 +1,15 @@
 import Image from "next/image";
-import Link from "next/link";
 import { getFeaturedProperties } from "@/lib/queries/properties";
 import type { PropertyWithImages } from "@/lib/types";
 import type { Dictionary, Locale } from "@/lib/i18n";
+import { LocaleLink } from "@/components/ui/locale-link";
 
 type FeaturedPropertiesProps = {
   dict: Dictionary["featured"];
   locale: Locale;
 };
 
-export async function FeaturedProperties({ dict: _dict, locale: _locale }: FeaturedPropertiesProps) {
+export async function FeaturedProperties({ dict, locale }: FeaturedPropertiesProps) {
   const properties = await getFeaturedProperties(8);
 
   return (
@@ -17,48 +17,50 @@ export async function FeaturedProperties({ dict: _dict, locale: _locale }: Featu
       <div className="flex items-end justify-between mb-8">
         <div>
           <div className="text-[0.55rem] tracking-[0.3em] uppercase text-accent font-medium mb-1.5">
-            Seçilmiş
+            {dict.eyebrow}
           </div>
           <div className="font-display text-[clamp(1.6rem,3vw,2.2rem)] font-light tracking-[0.06em] leading-none">
-            Portföy
+            {dict.title}
           </div>
         </div>
 
-        <Link
+        <LocaleLink
           href="/properties"
+          locale={locale}
           className="text-text-secondary text-[0.72rem] tracking-[0.15em] uppercase flex items-center gap-2 transition-colors duration-300 hover:text-accent group pb-0.5"
         >
-          Tümünü Gör
+          {dict.viewAll}
           <svg
             viewBox="0 0 24 24"
             className="w-4 h-4 fill-none stroke-current stroke-[1.5] transition-transform duration-300 group-hover:translate-x-1"
           >
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
-        </Link>
+        </LocaleLink>
       </div>
 
       {properties.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {properties.map((prop) => (
-            <PropertyCard key={prop.id} property={prop} />
+            <PropertyCard key={prop.id} property={prop} locale={locale} />
           ))}
         </div>
       ) : (
         <p className="text-text-muted text-center py-12">
-          Henüz öne çıkan mülk yok. Panelden ekleyebilirsiniz.
+          {dict.empty}
         </p>
       )}
     </section>
   );
 }
 
-function PropertyCard({ property: p }: { property: PropertyWithImages }) {
+function PropertyCard({ property: p, locale }: { property: PropertyWithImages; locale: Locale }) {
   const coverImage = p.images.find((i) => i.isCover) || p.images[0];
 
   return (
-    <Link
+    <LocaleLink
       href={`/properties/${p.slug}`}
+      locale={locale}
       className="group relative aspect-[4/3] overflow-hidden border border-border/40 transition-all duration-500 hover:border-accent/20 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] hover:z-10"
     >
       <div className="absolute inset-0 overflow-hidden">
@@ -106,6 +108,6 @@ function PropertyCard({ property: p }: { property: PropertyWithImages }) {
           )}
         </div>
       </div>
-    </Link>
+    </LocaleLink>
   );
 }

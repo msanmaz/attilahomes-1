@@ -1,46 +1,47 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { Dictionary, Locale } from "@/lib/i18n";
-
-const CITIES = [
-  {
-    name: "İstanbul",
-    subtitle: "Boğaz'ın İki Yakasında Eşsiz Yaşam",
-    city: "Istanbul",
-    image:
-      "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&q=80",
-  },
-  {
-    name: "Bodrum",
-    subtitle: "Ege Kıyısında Lüks Yaşam",
-    city: "Bodrum",
-    image:
-      "https://images.unsplash.com/photo-1600194795031-e8c60926db4f?w=800&q=80",
-  },
-];
+import { LocaleLink } from "@/components/ui/locale-link";
 
 type NeighborhoodsGridProps = {
   dict: Dictionary["neighborhoods"];
   locale: Locale;
 };
 
-export function NeighborhoodsGrid({ dict: _dict, locale: _locale }: NeighborhoodsGridProps) {
+export function NeighborhoodsGrid({ dict, locale }: NeighborhoodsGridProps) {
+  const CITIES = [
+    {
+      name: "İstanbul",
+      subtitle: dict.istanbulSubtitle,
+      city: "Istanbul",
+      image:
+        "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&q=80",
+    },
+    {
+      name: "Bodrum",
+      subtitle: dict.bodrumSubtitle,
+      city: "Bodrum",
+      image:
+        "https://images.unsplash.com/photo-1600194795031-e8c60926db4f?w=800&q=80",
+    },
+  ];
+
   return (
     <section className="py-24 px-8 bg-bg-secondary">
       <div className="mb-14">
         <div className="text-[0.65rem] tracking-[0.3em] uppercase text-accent font-medium mb-3">
-          Keşfet
+          {dict.eyebrow}
         </div>
         <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] font-light">
-          Şehirler
+          {dict.title}
         </h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {CITIES.map((c) => (
-          <Link
+          <LocaleLink
             key={c.name}
             href={`/properties?city=${c.city}`}
+            locale={locale}
             className="group relative aspect-[3/4] md:aspect-[4/3] overflow-hidden"
           >
             <Image
@@ -58,7 +59,7 @@ export function NeighborhoodsGrid({ dict: _dict, locale: _locale }: Neighborhood
                 {c.subtitle}
               </div>
             </div>
-          </Link>
+          </LocaleLink>
         ))}
       </div>
     </section>
