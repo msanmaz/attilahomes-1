@@ -6,10 +6,11 @@ import { LocaleLink } from "@/components/ui/locale-link";
 
 type FeaturedPropertiesProps = {
   dict: Dictionary["featured"];
+  propertyDict: Dictionary["property"];
   locale: Locale;
 };
 
-export async function FeaturedProperties({ dict, locale }: FeaturedPropertiesProps) {
+export async function FeaturedProperties({ dict, propertyDict, locale }: FeaturedPropertiesProps) {
   const properties = await getFeaturedProperties(8);
 
   return (
@@ -42,7 +43,7 @@ export async function FeaturedProperties({ dict, locale }: FeaturedPropertiesPro
       {properties.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {properties.map((prop) => (
-            <PropertyCard key={prop.id} property={prop} locale={locale} />
+            <PropertyCard key={prop.id} property={prop} dict={propertyDict} locale={locale} />
           ))}
         </div>
       ) : (
@@ -54,7 +55,7 @@ export async function FeaturedProperties({ dict, locale }: FeaturedPropertiesPro
   );
 }
 
-function PropertyCard({ property: p, locale }: { property: PropertyWithImages; locale: Locale }) {
+function PropertyCard({ property: p, dict, locale }: { property: PropertyWithImages; dict: Dictionary["property"]; locale: Locale }) {
   const coverImage = p.images.find((i) => i.isCover) || p.images[0];
 
   return (
@@ -84,7 +85,7 @@ function PropertyCard({ property: p, locale }: { property: PropertyWithImages; l
             : "bg-sage text-text-primary"
         }`}
       >
-        {p.type === "sale" ? "Satılık" : "Kiralık"}
+        {p.type === "sale" ? dict.sale : dict.rent}
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-[rgba(10,10,8,0.92)] via-[rgba(10,10,8,0.6)] to-transparent z-10">
@@ -95,9 +96,9 @@ function PropertyCard({ property: p, locale }: { property: PropertyWithImages; l
           {p.name}
         </div>
         <div className="flex gap-3 mb-2">
-          <span className="text-[0.65rem] text-text-secondary">{p.bedrooms} Yatak</span>
-          <span className="text-[0.65rem] text-text-secondary">{p.bathrooms} Banyo</span>
-          <span className="text-[0.65rem] text-text-secondary">{p.sqft.toLocaleString()} m²</span>
+          <span className="text-[0.65rem] text-text-secondary">{p.bedrooms} {dict.beds}</span>
+          <span className="text-[0.65rem] text-text-secondary">{p.bathrooms} {dict.baths}</span>
+          <span className="text-[0.65rem] text-text-secondary">{p.sqft.toLocaleString()} {dict.sqm}</span>
         </div>
         <div className="font-display text-[1.1rem] text-accent font-medium">
           {p.priceDisplay}

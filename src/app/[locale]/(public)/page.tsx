@@ -18,7 +18,7 @@ export default async function HomePage({
   return (
     <>
       <Hero dict={dict.hero} locale={locale} />
-      <FeaturedProperties dict={dict.featured} locale={locale} />
+      <FeaturedProperties dict={dict.featured} propertyDict={dict.property} locale={locale} />
       <AboutSection dict={dict.about} locale={locale} />
       <NeighborhoodsGrid dict={dict.neighborhoods} locale={locale} />
     </>

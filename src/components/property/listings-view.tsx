@@ -4,15 +4,17 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { PropertyWithImages } from "@/lib/types";
+import type { Dictionary } from "@/lib/i18n";
 import { PropertyCard } from "@/components/property/property-card";
 import { ListingsMap } from "@/components/map/map-provider";
 
 type Props = {
   properties: PropertyWithImages[];
   total: number;
+  propertyDict: Dictionary["property"];
 };
 
-export function ListingsView({ properties, total }: Props) {
+export function ListingsView({ properties, total, propertyDict }: Props) {
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const router = useRouter();
@@ -61,7 +63,7 @@ export function ListingsView({ properties, total }: Props) {
       {viewMode === "grid" && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-8 py-8 pb-24">
           {properties.length > 0 ? (
-            properties.map((p) => <PropertyCard key={p.id} property={p} />)
+            properties.map((p) => <PropertyCard key={p.id} property={p} dict={propertyDict} />)
           ) : (
             <div className="col-span-full text-center py-16">
               <p className="font-display text-2xl mb-2">Kriterlerinize uygun mülk bulunamadı</p>
@@ -89,7 +91,7 @@ export function ListingsView({ properties, total }: Props) {
                       : "border-transparent",
                   )}
                 >
-                  <PropertyCard property={p} />
+                  <PropertyCard property={p} dict={propertyDict} />
                 </div>
               ))}
             </div>

@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { getActiveProperties } from "@/lib/queries/properties";
 import { PropertyFilters } from "@/components/property/property-filters";
 import { ListingsView } from "@/components/property/listings-view";
+import { getDictionary, isValidLocale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Mülkler",
@@ -16,7 +19,9 @@ type Props = {
 };
 
 export default async function PropertiesPage({ params, searchParams }: Props) {
-  await params; // locale available for future use
+  const { locale } = await params;
+  if (!isValidLocale(locale)) notFound();
+  const dict = await getDictionary(locale as Locale);
   const searchParamsResolved = await searchParams;
   const filtered = await getActiveProperties({
     city: searchParamsResolved.city,
@@ -44,7 +49,7 @@ export default async function PropertiesPage({ params, searchParams }: Props) {
         <PropertyFilters />
       </Suspense>
 
-      <ListingsView properties={filtered} total={filtered.length} />
+      <ListingsView properties={filtered} total={filtered.length} propertyDict={dict.property} />
     </>
   );
 }

@@ -1,13 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { PropertyWithImages } from "@/lib/types";
+import type { Dictionary } from "@/lib/i18n";
 import { Badge } from "@/components/ui/badge";
 
 type PropertyCardProps = {
   property: PropertyWithImages;
+  dict: Dictionary["property"];
 };
 
-export function PropertyCard({ property: p }: PropertyCardProps) {
+export function PropertyCard({ property: p, dict }: PropertyCardProps) {
   const coverImage = p.images.find((i) => i.isCover) || p.images[0];
 
   return (
@@ -29,7 +31,7 @@ export function PropertyCard({ property: p }: PropertyCardProps) {
         )}
         <div className="absolute top-3 left-3">
           <Badge variant={p.type === "sale" ? "sale" : "rent"}>
-            {p.type === "sale" ? "Satılık" : "Kiralık"}
+            {p.type === "sale" ? dict.sale : dict.rent}
           </Badge>
         </div>
       </div>
@@ -42,9 +44,9 @@ export function PropertyCard({ property: p }: PropertyCardProps) {
           {p.name}
         </div>
         <div className="flex gap-4 mb-3">
-          <span className="text-[0.7rem] text-text-secondary">{p.bedrooms} Yatak</span>
-          <span className="text-[0.7rem] text-text-secondary">{p.bathrooms} Banyo</span>
-          <span className="text-[0.7rem] text-text-secondary">{p.sqft.toLocaleString()} m²</span>
+          <span className="text-[0.7rem] text-text-secondary">{p.bedrooms} {dict.beds}</span>
+          <span className="text-[0.7rem] text-text-secondary">{p.bathrooms} {dict.baths}</span>
+          <span className="text-[0.7rem] text-text-secondary">{p.sqft.toLocaleString()} {dict.sqm}</span>
         </div>
         <div className="flex justify-between items-center pt-3 border-t border-border">
           <div className="font-display text-[1.2rem] text-accent font-medium">
