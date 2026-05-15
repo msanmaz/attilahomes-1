@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { LocaleLink } from "@/components/ui/locale-link";
+import { getDictionary, isValidLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Hakkımızda — Attila Homes",
+  title: "About — Attila Homes",
   description:
-    "İstanbul'un enerjisi, Bodrum'un ayrıcalığı — tek bir çatı altında. Attila Homes'un hikayesini ve felsefesini keşfedin.",
+    "Istanbul's energy, Bodrum's exclusivity — under one roof. Discover Attila Homes' story and philosophy.",
 };
 
 export default async function AboutPage({
@@ -15,19 +17,21 @@ export default async function AboutPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  if (!isValidLocale(locale)) notFound();
+  const dict = await getDictionary(locale as Locale);
+
   return (
     <>
       {/* Hero */}
       <section className="pt-32 pb-16 px-8 bg-bg-secondary border-b border-border">
         <div className="text-[0.65rem] tracking-[0.3em] uppercase text-accent font-medium mb-3">
-          Hakkımızda
+          {dict.aboutPage.eyebrow}
         </div>
         <h1 className="font-display text-[clamp(2.5rem,5vw,4.5rem)] font-light mb-4 tracking-[0.05em]">
           Attila Homes
         </h1>
         <p className="font-display text-xl italic font-light text-accent/75 max-w-2xl leading-[1.6]">
-          İstanbul&apos;un enerjisi, Bodrum&apos;un ayrıcalığı —
-          tek bir çatı altında.
+          {dict.aboutPage.tagline}
         </p>
       </section>
 
@@ -44,34 +48,22 @@ export default async function AboutPage({
         </div>
         <div className="flex flex-col justify-center max-w-lg">
           <div className="text-[0.65rem] tracking-[0.3em] uppercase text-accent font-medium mb-4">
-            Kurucu & Danışman
+            {dict.aboutPage.founderTitle}
           </div>
           <h2 className="font-display text-3xl font-light mb-6">
             Attila Utkucan
           </h2>
           <p className="text-text-secondary leading-[1.8] font-light mb-5">
-            Attila Utkucan, İstanbul&apos;da büyüdü; her yaz Bodrum&apos;da
-            geçirdi. Her iki şehirde de küçüklüğünden beri inşaat ve
-            gayrimenkul dünyasının içinde olan biri olarak, bu iki kentin
-            sadece coğrafyasını değil, ruhunu da tanıyor. Attila Homes, bu
-            kişisel hikayeden doğan bir marka.
+            {dict.aboutPage.bio1}
           </p>
           <p className="text-text-secondary leading-[1.8] font-light mb-5">
-            İstanbul ve Bodrum&apos;da lüks konut, daire, villa, residence,
-            arsa ve ticari gayrimenkul alanlarında butik danışmanlık
-            sunuyoruz. Portföyümüzdeki her mülkü bizzat inceliyor; yalnızca
-            değer gördüklerimizi temsil ediyoruz.
+            {dict.aboutPage.bio2}
           </p>
           <p className="text-text-secondary leading-[1.8] font-light mb-6">
-            Gayrimenkulü bir satış kalemi olarak değil, yaşam tarzı ve
-            stratejik yatırım olarak değerlendiriyoruz. Bu yüzden standart
-            bir satış süreci değil, kişiselleştirilmiş ve sonuç odaklı bir
-            deneyim sunuyoruz. Yerli ve yabancı yatırımcılara, bölge
-            hakimiyetimiz ve güçlü networkümüz sayesinde sürdürülebilir
-            değer üreten fırsatları sunabiliyoruz.
+            {dict.aboutPage.bio3}
           </p>
           <p className="text-accent/70 font-display italic text-[1.05rem] leading-[1.6] mb-6">
-            İki şehrin lokali Attila Utkucan ve ekibi ile doğru mülkü bulun.
+            {dict.aboutPage.quote}
           </p>
           <div className="mt-2">
             <LocaleLink
@@ -79,7 +71,7 @@ export default async function AboutPage({
               locale={locale as Locale}
               className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-bg-primary text-[0.72rem] tracking-[0.18em] uppercase font-medium transition-all duration-300 hover:bg-accent-hover"
             >
-              İletişime Geçin
+              {dict.aboutPage.contactCta}
             </LocaleLink>
           </div>
         </div>
@@ -88,11 +80,11 @@ export default async function AboutPage({
       {/* Contact Info */}
       <section className="px-8 py-16 bg-bg-secondary border-t border-border">
         <div className="text-[0.65rem] tracking-[0.3em] uppercase text-accent font-medium mb-8">
-          İletişim Bilgileri
+          {dict.aboutPage.contactInfoTitle}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
-            <h3 className="font-display text-lg font-light mb-3">İstanbul Ofisi</h3>
+            <h3 className="font-display text-lg font-light mb-3">{dict.aboutPage.istanbulOffice}</h3>
             <p className="text-text-secondary text-[0.85rem] leading-[1.8]">
               Yeşilköy Mah. Ahmet Taner Kışlalı Sk.<br />
               No: 9/2 C Blok İç Kapı No: 1<br />
@@ -100,7 +92,7 @@ export default async function AboutPage({
             </p>
           </div>
           <div>
-            <h3 className="font-display text-lg font-light mb-3">Bodrum Ofisi</h3>
+            <h3 className="font-display text-lg font-light mb-3">{dict.aboutPage.bodrumOffice}</h3>
             <p className="text-text-secondary text-[0.85rem] leading-[1.8]">
               Adnan Menderes Cad. 1708 Sokak<br />
               İskender Evleri No:4 E Blok Daire: 3<br />
@@ -108,7 +100,7 @@ export default async function AboutPage({
             </p>
           </div>
           <div>
-            <h3 className="font-display text-lg font-light mb-3">Ulaşın</h3>
+            <h3 className="font-display text-lg font-light mb-3">{dict.aboutPage.reachUs}</h3>
             <div className="space-y-2">
               <a
                 href="mailto:info@attilahomes.com"
