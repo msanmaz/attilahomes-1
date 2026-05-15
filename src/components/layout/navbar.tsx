@@ -17,14 +17,7 @@ const NAV_LINKS = [
 export function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -53,16 +46,12 @@ export function Navbar() {
 
   return (
     <>
-      {isHomepage && <div className="attila-nav-spacer md:h-0" />}
+      {isHomepage && <div className="attila-nav-spacer" />}
 
       <nav
         className={cn(
           "attila-nav fixed left-0 right-0 z-[1000]",
-          scrolled || menuOpen
-            ? "bg-[#0f0f0f] md:bg-bg-primary/95 md:backdrop-blur-[20px] border-b border-accent/8"
-            : isHomepage
-              ? "bg-[#0f0f0f] md:bg-transparent md:backdrop-blur-none"
-              : "bg-[#0f0f0f]",
+          "bg-[#0f0f0f] border-b border-accent/8",
         )}
       >
         {/*

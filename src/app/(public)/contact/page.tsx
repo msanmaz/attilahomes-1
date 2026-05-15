@@ -25,7 +25,7 @@ export default function ContactPage() {
           <div className="space-y-6">
             <ContactItem label="İstanbul Ofisi" value="Beşiktaş, İstanbul" detail="+90 531 344 30 90" />
             <ContactItem label="Bodrum Ofisi" value="Bodrum Merkez, Muğla" detail="+90 531 344 30 90" />
-            <ContactItem label="E-posta" value="info@attilarealestate.com" />
+            <ContactItem label="E-posta" value="info@attilahomes.com" />
             <ContactItem label="WhatsApp" value="+90 531 344 30 90" />
           </div>
         </div>
