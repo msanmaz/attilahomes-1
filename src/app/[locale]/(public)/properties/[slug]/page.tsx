@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { LocaleLink } from "@/components/ui/locale-link";
+import { getDictionary, isValidLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { getPropertyBySlug } from "@/lib/queries/properties";
 import { Badge } from "@/components/ui/badge";
@@ -17,14 +18,15 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const property = await getPropertyBySlug(slug);
-  if (!property) return { title: "Mülk Bulunamadı" };
+  const dict = isValidLocale(locale) ? await getDictionary(locale as Locale) : null;
+  if (!property) return { title: dict?.propertyDetail.notFound ?? "Property Not Found" };
   return {
     title: property.name,
     description: property.description.slice(0, 160),
     openGraph: {
-      title: `${property.name} — ATTILA Emlak`,
+      title: `${property.name} — ATTILA`,
       description: property.description.slice(0, 160),
       images: property.images[0]
         ? [{ url: property.images[0].url, width: 1200, height: 630 }]
@@ -45,8 +47,20 @@ const NEARBY_ICONS: Record<NearbyIcon, React.ReactNode> = {
 
 export default async function PropertyDetailPage({ params }: Props) {
   const { slug, locale } = await params;
+  if (!isValidLocale(locale)) notFound();
+  const dict = await getDictionary(locale as Locale);
   const property = await getPropertyBySlug(slug);
   if (!property) notFound();
+
+  const stats = [
+    { value: property.bedrooms.toString(), label: dict.propertyDetail.bedroomsLabel },
+    { value: property.bathrooms.toString(), label: dict.propertyDetail.bathroomsLabel },
+    { value: property.sqft.toLocaleString(), label: dict.property.sqm },
+    {
+      value: property.type === "sale" ? dict.propertyDetail.deed : dict.propertyDetail.rental,
+      label: dict.propertyDetail.ownershipLabel,
+    },
+  ];
 
   return (
     <div className="pt-20">
@@ -58,7 +72,7 @@ export default async function PropertyDetailPage({ params }: Props) {
         <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none stroke-[1.5]">
           <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
-        İlanlara Dön
+        {dict.propertyDetail.backToListings}
       </LocaleLink>
 
       <PropertyGallery images={property.images} name={property.name} />
@@ -67,7 +81,7 @@ export default async function PropertyDetailPage({ params }: Props) {
         <div>
           <div className="mb-2">
             <Badge variant={property.type === "sale" ? "sale" : "rent"}>
-              {property.type === "sale" ? "Satılık" : "Kiralık"}
+              {property.type === "sale" ? dict.property.sale : dict.property.rent}
             </Badge>
           </div>
           <h1 className="font-display text-[clamp(2rem,4vw,3rem)] font-light mb-1">
@@ -82,12 +96,7 @@ export default async function PropertyDetailPage({ params }: Props) {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10 p-6 bg-bg-secondary border border-border">
-            {[
-              { value: property.bedrooms.toString(), label: "Yatak Odası" },
-              { value: property.bathrooms.toString(), label: "Banyo" },
-              { value: property.sqft.toLocaleString(), label: "m²" },
-              { value: property.type === "sale" ? "Tapu" : "Kira", label: "Mülkiyet" },
-            ].map((s) => (
+            {stats.map((s) => (
               <div key={s.label} className="text-center">
                 <div className="font-display text-2xl font-medium">{s.value}</div>
                 <div className="text-[0.62rem] tracking-[0.15em] uppercase text-text-muted mt-0.5">{s.label}</div>
@@ -96,7 +105,7 @@ export default async function PropertyDetailPage({ params }: Props) {
           </div>
 
           <div className="mb-10">
-            <h3 className="font-display text-2xl font-normal mb-4">Bu Mülk Hakkında</h3>
+            <h3 className="font-display text-2xl font-normal mb-4">{dict.propertyDetail.aboutSection}</h3>
             <p className="text-text-secondary leading-[1.8] text-[0.9rem] font-light">{property.description}</p>
           </div>
 
@@ -104,7 +113,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
           {property.lat && property.lng && (
             <div className="mb-10">
-              <h3 className="font-display text-2xl font-normal mb-4">Konum</h3>
+              <h3 className="font-display text-2xl font-normal mb-4">{dict.propertyDetail.locationSection}</h3>
               <div className="h-[300px] border border-border">
                 <DetailMap
                   lat={property.lat}
@@ -125,7 +134,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
           {property.nearbyPlaces.length > 0 && (
             <div className="mb-10">
-              <h3 className="font-display text-2xl font-normal mb-4">Yakın Çevre</h3>
+              <h3 className="font-display text-2xl font-normal mb-4">{dict.propertyDetail.nearbySection}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {property.nearbyPlaces.map((n) => (
                   <div key={n.id} className="flex items-center gap-2.5 p-3 bg-bg-secondary text-[0.75rem] text-text-secondary">
