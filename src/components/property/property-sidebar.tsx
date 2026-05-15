@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { submitInquiry } from "@/lib/actions/inquiry-actions";
+import { useDictionary } from "@/components/providers/dictionary-provider";
 import type { PropertyWithImages } from "@/lib/types";
 
 type ModalType = "viewing" | "info" | null;
@@ -12,9 +13,10 @@ type Props = {
 };
 
 export function PropertySidebar({ property: p }: Props) {
+  const dict = useDictionary();
   const [modal, setModal] = useState<ModalType>(null);
   const priceNote =
-    p.type === "rent" ? "Aylık, mobilyalı" : "İstenen fiyat, pazarlık hariç";
+    p.type === "rent" ? dict.sidebar.monthlyFurnished : dict.sidebar.askingPrice;
 
   useEffect(() => {
     document.body.style.overflow = modal ? "hidden" : "";
@@ -35,14 +37,14 @@ export function PropertySidebar({ property: p }: Props) {
             className="w-full mb-2.5 justify-center"
             onClick={() => setModal("viewing")}
           >
-            {p.type === "sale" ? "Görüntüleme Randevusu" : "Hemen Başvur"}
+            {p.type === "sale" ? dict.sidebar.scheduleViewing : dict.sidebar.applyNow}
           </Button>
           <Button
             variant="outline"
             className="w-full justify-center"
             onClick={() => setModal("info")}
           >
-            Bilgi İste
+            {dict.sidebar.requestInfo}
           </Button>
 
           <div className="flex items-center gap-4 pt-6 mt-6 border-t border-border">
@@ -79,6 +81,7 @@ type SheetProps = {
 };
 
 function ContactSheet({ type, propertyId, propertyName, onClose }: SheetProps) {
+  const dict = useDictionary();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -88,10 +91,8 @@ function ContactSheet({ type, propertyId, propertyName, onClose }: SheetProps) {
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
 
   const isViewing = type === "viewing";
-  const title = isViewing ? "Görüntüleme Randevusu" : "Bilgi İste";
-  const subtitle = isViewing
-    ? "Mülkü yerinde görmek için tercihlerinizi bırakın, size en kısa sürede ulaşalım."
-    : "Bu mülk hakkında merak ettiklerinizi sorun, ekibimiz size özel bilgi sunsun.";
+  const title = isViewing ? dict.sheet.viewingTitle : dict.sheet.infoTitle;
+  const subtitle = isViewing ? dict.sheet.viewingSubtitle : dict.sheet.infoSubtitle;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -99,8 +100,8 @@ function ContactSheet({ type, propertyId, propertyName, onClose }: SheetProps) {
     setStatus("sending");
 
     const fullMessage = [
-      isViewing && date ? `Tercih edilen tarih: ${date}` : null,
-      isViewing && timeSlot ? `Tercih edilen saat: ${timeSlot}` : null,
+      isViewing && date ? `Preferred date: ${date}` : null,
+      isViewing && timeSlot ? `Preferred time: ${timeSlot}` : null,
       message || null,
     ]
       .filter(Boolean)
@@ -154,7 +155,7 @@ function ContactSheet({ type, propertyId, propertyName, onClose }: SheetProps) {
           <button
             onClick={onClose}
             className="w-9 h-9 flex items-center justify-center border border-white/10 hover:border-accent/40 transition-colors duration-300 mt-1 shrink-0"
-            aria-label="Kapat"
+            aria-label={dict.sheet.close}
           >
             <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-text-muted fill-none stroke-[1.5]">
               <path d="M18 6L6 18M6 6l12 12" />
@@ -174,41 +175,41 @@ function ContactSheet({ type, propertyId, propertyName, onClose }: SheetProps) {
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
-              <h3 className="font-display text-2xl font-light mb-3">Talebiniz Alındı</h3>
+              <h3 className="font-display text-2xl font-light mb-3">{dict.sheet.submitted}</h3>
               <p className="text-text-muted text-[0.82rem] leading-relaxed max-w-[260px]">
-                En geç 24 saat içinde{" "}
+                {dict.sheet.confirmBefore}{" "}
                 <span className="text-text-secondary">{email}</span>{" "}
-                adresinize dönüş yapacağız.
+                {dict.sheet.confirmAfter}
               </p>
               <button
                 onClick={onClose}
                 className="mt-8 text-[0.68rem] tracking-[0.2em] uppercase text-accent/70 hover:text-accent transition-colors duration-300 bg-transparent border-none cursor-pointer font-body"
               >
-                Kapat
+                {dict.sheet.close}
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
-              <Field label="Ad Soyad *">
+              <Field label={`${dict.sheet.fullName} *`}>
                 <SheetInput
-                  placeholder="Adınız ve soyadınız"
+                  placeholder={dict.sheet.fullName}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
                 />
               </Field>
 
-              <Field label="E-posta *">
+              <Field label={`${dict.sheet.email} *`}>
                 <SheetInput
                   type="email"
-                  placeholder="siz@ornek.com"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </Field>
 
-              <Field label={isViewing ? "Telefon *" : "Telefon"}>
+              <Field label={isViewing ? `${dict.sheet.phone} *` : dict.sheet.phone}>
                 <SheetInput
                   type="tel"
                   placeholder="+90 5__ ___ __ __"
@@ -219,38 +220,32 @@ function ContactSheet({ type, propertyId, propertyName, onClose }: SheetProps) {
               </Field>
 
               {isViewing && (
-                <>
-                  <div className="grid grid-cols-2 gap-3">
-                    <Field label="Tercih Edilen Tarih">
-                      <SheetInput
-                        type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        min={new Date().toISOString().split("T")[0]}
-                      />
-                    </Field>
-                    <Field label="Saat Aralığı">
-                      <SheetSelect
-                        value={timeSlot}
-                        onChange={(e) => setTimeSlot(e.target.value)}
-                      >
-                        <option value="">Seçin</option>
-                        <option value="Sabah (09:00–12:00)">Sabah 09–12</option>
-                        <option value="Öğleden sonra (12:00–17:00)">Öğleden sonra 12–17</option>
-                        <option value="Akşam (17:00–20:00)">Akşam 17–20</option>
-                      </SheetSelect>
-                    </Field>
-                  </div>
-                </>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label={dict.sheet.preferredDate}>
+                    <SheetInput
+                      type="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      min={new Date().toISOString().split("T")[0]}
+                    />
+                  </Field>
+                  <Field label={dict.sheet.timeSlot}>
+                    <SheetSelect
+                      value={timeSlot}
+                      onChange={(e) => setTimeSlot(e.target.value)}
+                    >
+                      <option value="">{dict.sheet.selectTime}</option>
+                      <option value="morning">{dict.sheet.morning}</option>
+                      <option value="afternoon">{dict.sheet.afternoon}</option>
+                      <option value="evening">{dict.sheet.evening}</option>
+                    </SheetSelect>
+                  </Field>
+                </div>
               )}
 
-              <Field label="Mesaj (isteğe bağlı)">
+              <Field label={dict.sheet.messageOptional}>
                 <textarea
-                  placeholder={
-                    isViewing
-                      ? "Randevuyla ilgili notlarınız…"
-                      : "Bu mülk hakkında sormak istedikleriniz…"
-                  }
+                  placeholder={isViewing ? dict.sheet.viewingNotes : dict.sheet.infoQuestion}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
@@ -260,7 +255,7 @@ function ContactSheet({ type, propertyId, propertyName, onClose }: SheetProps) {
 
               {status === "error" && (
                 <p className="text-[0.75rem] text-rose bg-rose/10 px-3 py-2">
-                  Bir hata oluştu. Lütfen tekrar deneyin.
+                  {dict.sheet.error}
                 </p>
               )}
 
@@ -270,14 +265,14 @@ function ContactSheet({ type, propertyId, propertyName, onClose }: SheetProps) {
                 className="w-full py-4 bg-accent text-bg-primary text-[0.7rem] tracking-[0.2em] uppercase font-semibold font-body transition-all duration-400 hover:bg-accent-hover disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {status === "sending"
-                  ? "Gönderiliyor…"
+                  ? dict.sheet.sending
                   : isViewing
-                    ? "Randevu Talebi Gönder"
-                    : "Bilgi Talebini Gönder"}
+                    ? dict.sheet.submitViewing
+                    : dict.sheet.submitInfo}
               </button>
 
               <p className="text-center text-[0.65rem] text-text-muted/60">
-                Bilgileriniz yalnızca sizinle iletişim kurmak amacıyla kullanılır.
+                {dict.sheet.privacyNote}
               </p>
             </form>
           )}
