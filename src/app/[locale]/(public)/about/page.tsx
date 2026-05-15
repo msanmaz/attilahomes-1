@@ -5,7 +5,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Hakkımızda — Attila Homes",
   description:
-    "Attila Utkucan ile tanışın — İstanbul ve Bodrum pazarlarına derin hakimiyetiyle tanınan bağımsız bir emlak danışmanı.",
+    "İstanbul'un enerjisi, Bodrum'un ayrıcalığı — tek bir çatı altında. Attila Homes'un hikayesini ve felsefesini keşfedin.",
 };
 
 export default function AboutPage() {
@@ -19,9 +19,9 @@ export default function AboutPage() {
         <h1 className="font-display text-[clamp(2.5rem,5vw,4.5rem)] font-light mb-4 tracking-[0.05em]">
           Attila Homes
         </h1>
-        <p className="text-text-secondary text-lg font-light max-w-2xl">
-          İstanbul ve Bodrum&apos;da miras ile çağdaş yaşamı buluşturan
-          bağımsız bir emlak danışmanlığı ve restorasyon firması.
+        <p className="font-display text-xl italic font-light text-accent/75 max-w-2xl leading-[1.6]">
+          İstanbul&apos;un enerjisi, Bodrum&apos;un ayrıcalığı —
+          tek bir çatı altında.
         </p>
       </section>
 
@@ -43,25 +43,31 @@ export default function AboutPage() {
           <h2 className="font-display text-3xl font-light mb-6">
             Attila Utkucan
           </h2>
-          <p className="text-text-secondary leading-[1.8] font-light mb-4">
-            İstanbul&apos;da kökleri olan, Bodrum ve İstanbul pazarlarına
-            derin hakimiyetiyle tanınan bağımsız bir emlak danışmanı. Attila,
-            itibarını potansiyeli sezme yeteneği üzerine inşa etmiştir —
-            başkalarının eskimişlik gördüğü yerde değeri, yaşlanma gördüğü
-            yerde karakteri keşfeder. Müşterileri ona dürüst rehberliği, yerel
-            bilgisi ve bir mülkün ne olabileceğini gören keskin bakışı için
-            güvenir.
+          <p className="text-text-secondary leading-[1.8] font-light mb-5">
+            Attila Utkucan, İstanbul&apos;da büyüdü; her yaz Bodrum&apos;da
+            geçirdi. Her iki şehirde de küçüklüğünden beri inşaat ve
+            gayrimenkul dünyasının içinde olan biri olarak, bu iki kentin
+            sadece coğrafyasını değil, ruhunu da tanıyor. Attila Homes, bu
+            kişisel hikayeden doğan bir marka.
           </p>
-          <p className="text-text-secondary leading-[1.8] font-light mb-4">
-            Danışmanlığın ötesinde Attila, İstanbul&apos;un eskiyen
-            apartmanlarını çağdaş yaşam alanlarına dönüştürme konusunda
-            uzmanlaşmış, sahada çalışan bir geliştiricidir. Tarihi
-            semtlerdeki bakımsız binaları keşfetmekten renovasyonun her
-            detayını bizzat yönetmeye kadar, vizyon ile gerçeklik arasındaki
-            köprüyü kurar — mirasına sadık kalırken çağdaş standartları
-            karşılayan evler sunar.
+          <p className="text-text-secondary leading-[1.8] font-light mb-5">
+            İstanbul ve Bodrum&apos;da lüks konut, daire, villa, residence,
+            arsa ve ticari gayrimenkul alanlarında butik danışmanlık
+            sunuyoruz. Portföyümüzdeki her mülkü bizzat inceliyor; yalnızca
+            değer gördüklerimizi temsil ediyoruz.
           </p>
-          <div className="mt-4">
+          <p className="text-text-secondary leading-[1.8] font-light mb-6">
+            Gayrimenkulü bir satış kalemi olarak değil, yaşam tarzı ve
+            stratejik yatırım olarak değerlendiriyoruz. Bu yüzden standart
+            bir satış süreci değil, kişiselleştirilmiş ve sonuç odaklı bir
+            deneyim sunuyoruz. Yerli ve yabancı yatırımcılara, bölge
+            hakimiyetimiz ve güçlü networkümüz sayesinde sürdürülebilir
+            değer üreten fırsatları sunabiliyoruz.
+          </p>
+          <p className="text-accent/70 font-display italic text-[1.05rem] leading-[1.6] mb-6">
+            İki şehrin lokali Attila Utkucan ve ekibi ile doğru mülkü bulun.
+          </p>
+          <div className="mt-2">
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-bg-primary text-[0.72rem] tracking-[0.18em] uppercase font-medium transition-all duration-300 hover:bg-accent-hover"
