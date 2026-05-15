@@ -1,12 +1,12 @@
 export const LOCALES = ['tr', 'en', 'ru'] as const;
-export const DEFAULT_LOCALE = 'tr';
+export const DEFAULT_LOCALE: Locale = 'tr';
 export type Locale = (typeof LOCALES)[number];
 
 export function isValidLocale(locale: string): locale is Locale {
   return (LOCALES as readonly string[]).includes(locale);
 }
 
-export async function getDictionary(locale: Locale) {
+export async function getDictionary(locale: Locale): Promise<Dictionary> {
   return (await import(`@/messages/${locale}.json`)).default as Dictionary;
 }
 
