@@ -1,7 +1,14 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { LocaleLink } from "@/components/ui/locale-link";
+import type { Dictionary, Locale } from "@/lib/i18n";
 
-export function Footer() {
+type FooterProps = {
+  dict: Dictionary["footer"];
+  locale: Locale;
+};
+
+export function Footer({ dict, locale }: FooterProps) {
   return (
     <footer className="pt-16 pb-8 px-8 border-t border-border bg-bg-secondary">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-8 mb-12">
@@ -15,25 +22,60 @@ export function Footer() {
             />
           </div>
           <p className="text-[0.8rem] text-text-muted leading-relaxed max-w-[300px]">
-            İstanbul ve Bodrum yarımadasında özenle seçilmiş emlak. Her mülk
-            Attila Utkucan ve ekibi tarafından bizzat değerlendirilir.
+            {dict.description}
           </p>
         </div>
 
-        <FooterCol title="Emlaklar">
-          <FooterLink href="/properties?type=sale">Satılık</FooterLink>
-          <FooterLink href="/properties?type=rent">Kiralık</FooterLink>
-          <FooterLink href="/properties?city=Istanbul">İstanbul</FooterLink>
-          <FooterLink href="/properties?city=Bodrum">Bodrum</FooterLink>
+        <FooterCol title={dict.properties}>
+          <LocaleLink
+            href="/properties?type=sale"
+            locale={locale}
+            className="block text-[0.8rem] text-text-muted mb-2.5 transition-colors duration-300 hover:text-accent"
+          >
+            {dict.forSale}
+          </LocaleLink>
+          <LocaleLink
+            href="/properties?type=rent"
+            locale={locale}
+            className="block text-[0.8rem] text-text-muted mb-2.5 transition-colors duration-300 hover:text-accent"
+          >
+            {dict.forRent}
+          </LocaleLink>
+          <LocaleLink
+            href="/properties?city=Istanbul"
+            locale={locale}
+            className="block text-[0.8rem] text-text-muted mb-2.5 transition-colors duration-300 hover:text-accent"
+          >
+            İstanbul
+          </LocaleLink>
+          <LocaleLink
+            href="/properties?city=Bodrum"
+            locale={locale}
+            className="block text-[0.8rem] text-text-muted mb-2.5 transition-colors duration-300 hover:text-accent"
+          >
+            Bodrum
+          </LocaleLink>
         </FooterCol>
 
-        <FooterCol title="Şirket">
-          <FooterLink href="/about">Hakkımızda</FooterLink>
-          <FooterLink href="/contact">İletişim</FooterLink>
-          <FooterLink href="#">Blog</FooterLink>
+        <FooterCol title={dict.company}>
+          <LocaleLink
+            href="/about"
+            locale={locale}
+            className="block text-[0.8rem] text-text-muted mb-2.5 transition-colors duration-300 hover:text-accent"
+          >
+            {dict.about}
+          </LocaleLink>
+          <LocaleLink
+            href="/contact"
+            locale={locale}
+            className="block text-[0.8rem] text-text-muted mb-2.5 transition-colors duration-300 hover:text-accent"
+          >
+            {dict.contact}
+          </LocaleLink>
+          <FooterLink href="#">{dict.blog}</FooterLink>
         </FooterCol>
 
-        <FooterCol title="İletişim">
+        <FooterCol title={dict.contactSection}>
           <FooterLink href="mailto:info@attilahomes.com">info@attilahomes.com</FooterLink>
           <FooterLink href="tel:+905313443090">+90 531 344 30 90</FooterLink>
           <a
@@ -65,11 +107,10 @@ export function Footer() {
 
       <div className="flex flex-col sm:flex-row justify-between items-center pt-8 border-t border-border/60 gap-2">
         <p className="text-[0.7rem] text-text-muted">
-          &copy; {new Date().getFullYear()} Attila Homes. Tüm hakları
-          saklıdır.
+          &copy; {new Date().getFullYear()} Attila Homes. {dict.rights}
         </p>
         <p className="text-[0.7rem] text-text-muted">
-          Titizlikle tasarlandı
+          {dict.crafted}
         </p>
       </div>
     </footer>
@@ -109,4 +150,3 @@ function FooterLink({
     </Link>
   );
 }
-
