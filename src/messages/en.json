@@ -87,6 +87,8 @@
     "locationSection": "Location",
     "nearbySection": "Nearby",
     "featuresSection": "Features & Amenities",
+    "openGallery": "Open Gallery",
+    "photos": "Photos",
     "notFound": "Property Not Found"
   },
   "sidebar": {

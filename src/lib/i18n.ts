@@ -100,6 +100,8 @@ export type Dictionary = {
     locationSection: string;
     nearbySection: string;
     featuresSection: string;
+    openGallery: string;
+    photos: string;
     notFound: string;
   };
   sidebar: {

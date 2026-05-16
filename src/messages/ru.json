@@ -87,6 +87,8 @@
     "locationSection": "Расположение",
     "nearbySection": "Рядом",
     "featuresSection": "Характеристики и удобства",
+    "openGallery": "Открыть галерею",
+    "photos": "Фото",
     "notFound": "Объект не найден"
   },
   "sidebar": {

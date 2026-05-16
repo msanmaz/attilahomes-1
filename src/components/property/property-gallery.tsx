@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
+import { useDictionary } from "@/components/providers/dictionary-provider";
 import type { PropertyImage } from "@/lib/types";
 
 type Props = {
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export function PropertyGallery({ images, name }: Props) {
+  const dict = useDictionary();
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const thumbStripRef = useRef<HTMLDivElement>(null);
 
@@ -80,7 +82,7 @@ export function PropertyGallery({ images, name }: Props) {
           />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-bg-primary/60 backdrop-blur-sm px-4 py-2 text-[0.72rem] tracking-[0.1em] uppercase text-text-primary">
-              Galeriyi Aç
+              {dict.propertyDetail.openGallery}
             </div>
           </div>
         </div>
@@ -102,7 +104,7 @@ export function PropertyGallery({ images, name }: Props) {
               {i === 1 && (
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-end justify-end p-4">
                   <div className="px-3 py-1.5 bg-bg-primary/70 backdrop-blur-[10px] text-[0.68rem] tracking-[0.1em]">
-                    {images.length} Fotoğraf
+                    {images.length} {dict.propertyDetail.photos}
                   </div>
                 </div>
               )}
