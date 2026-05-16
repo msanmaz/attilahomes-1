@@ -17,6 +17,7 @@ export function Hero({ dict, locale }: HeroProps): React.ReactElement {
           alt="Bodrum kıyıları"
           fill
           priority
+          quality={50}
           className="object-cover brightness-[0.35] saturate-[0.8] scale-105 animate-[hero-zoom_20s_ease-in-out_infinite_alternate]"
           sizes="100vw"
         />

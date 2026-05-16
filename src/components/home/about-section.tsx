@@ -57,7 +57,7 @@ export function AboutSection({ dict, locale }: AboutSectionProps) {
           {dict.bio2}
         </p>
 
-        <LocaleLink href="/about" locale={locale}>
+        <LocaleLink href="/about" locale={locale} aria-label={dict.moreLabel}>
           <Button variant="outline">{dict.more}</Button>
         </LocaleLink>
       </div>

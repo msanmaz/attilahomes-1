@@ -41,6 +41,7 @@ export type Dictionary = {
     bio1: string;
     bio2: string;
     more: string;
+    moreLabel: string;
   };
   neighborhoods: {
     eyebrow: string;
