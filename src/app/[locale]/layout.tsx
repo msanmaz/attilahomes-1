@@ -73,6 +73,20 @@ export default async function LocaleLayout({
       className={`${cormorant.variable} ${outfit.variable}`}
     >
       <body>
+        {/* Fills the Dynamic Island / notch zone with nav color on all browsers.
+            Inline style so it applies before any stylesheet is parsed. */}
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "env(safe-area-inset-top, 0px)",
+            backgroundColor: "#0f0f0f",
+            zIndex: 1001,
+            pointerEvents: "none",
+          }}
+        />
         <DictionaryProvider dictionary={dictionary}>
           {children}
         </DictionaryProvider>

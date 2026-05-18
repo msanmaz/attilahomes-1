@@ -49,14 +49,29 @@ body {
 }
 
 /* ─── SAFE AREA NAV ─── */
-.attila-nav {
+
+/* Dedicated fill that colors the Dynamic Island / notch zone.
+   Rendered inline via layout.tsx — no CSS load-order dependency. */
+.attila-safe-fill {
+  position: fixed;
   top: 0;
-  padding-top: env(safe-area-inset-top, 0px);
-  height: calc(4.5rem + env(safe-area-inset-top, 0px));
-  min-height: calc(4.5rem + env(safe-area-inset-top, 0px));
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background-color: #0f0f0f;
+  z-index: 1001;
+  pointer-events: none;
+}
+
+/* Navbar sits below the safe area — clean 4.5rem with no padding tricks. */
+.attila-nav {
+  top: env(safe-area-inset-top, 0px);
+  height: 4.5rem;
+  min-height: 4.5rem;
   box-sizing: border-box;
 }
 
+/* Spacer still accounts for both zones so content isn't hidden beneath either. */
 .attila-nav-spacer {
   height: calc(4.5rem + env(safe-area-inset-top, 0px));
 }
