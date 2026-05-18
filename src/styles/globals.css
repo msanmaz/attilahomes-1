@@ -51,7 +51,8 @@ body {
 /* ─── SAFE AREA NAV ─── */
 
 /* Dedicated fill that colors the Dynamic Island / notch zone.
-   Rendered inline via layout.tsx — no CSS load-order dependency. */
+   transform: translate3d forces its own GPU compositor layer so it
+   always renders above scrolling content on iOS Safari. */
 .attila-safe-fill {
   position: fixed;
   top: 0;
@@ -61,17 +62,25 @@ body {
   background-color: #0f0f0f;
   z-index: 1001;
   pointer-events: none;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
 
-/* Navbar sits below the safe area — clean 4.5rem with no padding tricks. */
+/* Nav starts at top:0 so its background covers the safe zone.
+   padding-top pushes nav content below the Dynamic Island.
+   transform: translate3d forces its own GPU layer — critical fix for
+   iOS Safari's scroll compositing bug where fixed elements can appear
+   behind scrolled content without this hint. */
 .attila-nav {
-  top: env(safe-area-inset-top, 0px);
-  height: 4.5rem;
-  min-height: 4.5rem;
+  top: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  height: calc(4.5rem + env(safe-area-inset-top, 0px));
+  min-height: calc(4.5rem + env(safe-area-inset-top, 0px));
   box-sizing: border-box;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
 
-/* Spacer still accounts for both zones so content isn't hidden beneath either. */
 .attila-nav-spacer {
   height: calc(4.5rem + env(safe-area-inset-top, 0px));
 }

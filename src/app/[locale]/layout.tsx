@@ -85,6 +85,8 @@ export default async function LocaleLayout({
             backgroundColor: "#0f0f0f",
             zIndex: 1001,
             pointerEvents: "none",
+            WebkitTransform: "translate3d(0,0,0)",
+            transform: "translate3d(0,0,0)",
           }}
         />
         <DictionaryProvider dictionary={dictionary}>
