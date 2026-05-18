@@ -46,6 +46,8 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0 !important;
+  /* Prevent iOS rubber-band bounce from pulling content into the safe zone */
+  overscroll-behavior: none;
 }
 
 /* ─── SAFE AREA NAV ─── */
@@ -79,6 +81,7 @@ body {
   box-sizing: border-box;
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
+  will-change: transform;
 }
 
 .attila-nav-spacer {
@@ -94,6 +97,8 @@ body::before {
   pointer-events: none;
   opacity: 0.025;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
 
 /* ─── SCROLLBAR ─── */
