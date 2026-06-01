@@ -47,6 +47,7 @@ export const metadata: Metadata = {
   other: {
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "black-translucent",
+    "google-site-verification": "FG2N5eNmdFyb7AeFBI24vc6lAwaRyoGNtnmrfs_o20k",
   },
 };
 
