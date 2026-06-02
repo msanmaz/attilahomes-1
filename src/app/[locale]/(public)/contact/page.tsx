@@ -3,12 +3,26 @@ import { ContactForm } from "@/components/contact-form";
 import { getDictionary, isValidLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { notFound } from "next/navigation";
+import { getCanonical, getHreflang } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description:
-    "Contact Attila Utkucan for property enquiries in Istanbul and Bodrum.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "Contact",
+    description: "Contact Attila Utkucan for property enquiries in Istanbul and Bodrum.",
+    openGraph: {
+      images: [{ url: "/logo.jpg", width: 1200, height: 630 }],
+    },
+    alternates: {
+      canonical: getCanonical(locale as Locale, "/contact"),
+      languages: getHreflang("/contact"),
+    },
+  };
+}
 
 export default async function ContactPage({
   params,

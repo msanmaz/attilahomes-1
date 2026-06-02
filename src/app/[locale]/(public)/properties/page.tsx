@@ -6,12 +6,27 @@ import { ListingsView } from "@/components/property/listings-view";
 import { getDictionary, isValidLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { notFound } from "next/navigation";
+import { getCanonical, getHreflang } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Properties",
-  description:
-    "Explore carefully curated properties in Istanbul and Bodrum. Filter by city, type, bedrooms and price.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "Properties",
+    description:
+      "Explore carefully curated properties in Istanbul and Bodrum. Filter by city, type, bedrooms and price.",
+    openGraph: {
+      images: [{ url: "/logo.jpg", width: 1200, height: 630 }],
+    },
+    alternates: {
+      canonical: getCanonical(locale as Locale, "/properties"),
+      languages: getHreflang("/properties"),
+    },
+  };
+}
 
 type Props = {
   params: Promise<{ locale: string }>;

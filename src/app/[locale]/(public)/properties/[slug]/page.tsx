@@ -4,6 +4,7 @@ import { LocaleLink } from "@/components/ui/locale-link";
 import { getDictionary, isValidLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { getPropertyBySlug } from "@/lib/queries/properties";
+import { getCanonical, getHreflang } from "@/lib/seo";
 import { Badge } from "@/components/ui/badge";
 import { PropertyGallery } from "@/components/property/property-gallery";
 import { PropertyFeatures } from "@/components/property/property-features";
@@ -31,6 +32,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: property.images[0]
         ? [{ url: property.images[0].url, width: 1200, height: 630 }]
         : [],
+    },
+    alternates: {
+      canonical: getCanonical(locale as Locale, `/properties/${slug}`),
+      languages: getHreflang(`/properties/${slug}`),
     },
   };
 }
