@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { PropertyJsonLd } from "@/components/seo/structured-data";
 import { LocaleLink } from "@/components/ui/locale-link";
 import { getDictionary, isValidLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -69,6 +70,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
   return (
     <div className="pt-20">
+      <PropertyJsonLd property={property} />
       <LocaleLink
         href="/properties"
         locale={locale as Locale}
