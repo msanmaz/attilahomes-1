@@ -4,12 +4,27 @@ import { LocaleLink } from "@/components/ui/locale-link";
 import { getDictionary, isValidLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { notFound } from "next/navigation";
+import { getCanonical, getHreflang } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About — Attila Homes",
-  description:
-    "Istanbul's energy, Bodrum's exclusivity — under one roof. Discover Attila Homes' story and philosophy.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "About",
+    description:
+      "Istanbul's energy, Bodrum's exclusivity — under one roof. Discover Attila Homes' story and philosophy.",
+    openGraph: {
+      images: [{ url: "/attila-portrait.jpg", width: 1200, height: 630 }],
+    },
+    alternates: {
+      canonical: getCanonical(locale as Locale, "/about"),
+      languages: getHreflang("/about"),
+    },
+  };
+}
 
 export default async function AboutPage({
   params,

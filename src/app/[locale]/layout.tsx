@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { notFound } from "next/navigation";
 import { getDictionary, isValidLocale, LOCALES } from "@/lib/i18n";
+import { SITE_URL } from "@/lib/constants";
 import type { Locale } from "@/lib/i18n";
 import { DictionaryProvider } from "@/components/providers/dictionary-provider";
 import "@/styles/globals.css";
@@ -34,6 +35,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Attila Homes",
     template: "%s — Attila Homes",

@@ -1,5 +1,7 @@
 import type { City } from "./types";
 
+export const SITE_URL = 'https://attilahomes.com';
+
 export const NEIGHBORHOODS: Record<City, string[]> = {
   Istanbul: [
     "Adalar",
